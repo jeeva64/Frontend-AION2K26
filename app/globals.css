@@ -1,0 +1,536 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* AION 2K26 brand palette */
+  --color-primary-blue: #3b82f6;
+  --color-primary-blue-dark: #2563eb;
+  --color-primary-blue-darker: #1e40af;
+  --color-primary-blue-light: #60a5fa;
+  --color-primary-blue-lightest: #dbeafe;
+  --color-secondary-purple: #8b5cf6;
+  --color-secondary-purple-dark: #7c3aed;
+  --color-secondary-purple-light: #a78bfa;
+  --color-success-green: #10b981;
+  --color-warning-yellow: #f59e0b;
+  --color-error-red: #ef4444;
+
+  /* AION 2K26 animations */
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-delay: float-delay 7s ease-in-out 1.5s infinite;
+  --animate-particle-float: particle-float 12s ease-in-out infinite;
+  --animate-pulse-ring: pulse-ring 2.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  --animate-glow: glow 3s ease-in-out infinite;
+  --animate-fade-in-up: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-deadline-pulse: deadlinePulse 2s ease-in-out infinite;
+}
+
+:root {
+  --background: oklch(0.979 0.004 246.549);
+  --foreground: oklch(0.208 0.042 265.755);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.208 0.042 265.755);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.208 0.042 265.755);
+  --primary: oklch(0.546 0.245 262.881);
+  --primary-foreground: oklch(0.985 0.002 247.839);
+  --secondary: oklch(0.937 0.033 255.585);
+  --secondary-foreground: oklch(0.421 0.153 262.11);
+  --muted: oklch(0.955 0.007 253.065);
+  --muted-foreground: oklch(0.516 0.047 257.807);
+  --accent: oklch(0.937 0.033 255.585);
+  --accent-foreground: oklch(0.421 0.153 262.11);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.9 0.016 255.585);
+  --input: oklch(0.85 0.026 255.585);
+  --ring: oklch(0.551 0.217 262.881);
+  --chart-1: oklch(0.551 0.217 262.881);
+  --chart-2: oklch(0.555 0.191 293.091);
+  --chart-3: oklch(0.641 0.189 225.609);
+  --chart-4: oklch(0.765 0.15 244.601);
+  --chart-5: oklch(0.88 0.135 236.25);
+  --radius: 0.75rem;
+  --sidebar: oklch(0.985 0.002 247.839);
+  --sidebar-foreground: oklch(0.208 0.042 265.755);
+  --sidebar-primary: oklch(0.546 0.245 262.881);
+  --sidebar-primary-foreground: oklch(0.985 0.002 247.839);
+  --sidebar-accent: oklch(0.937 0.033 255.585);
+  --sidebar-accent-foreground: oklch(0.421 0.153 262.11);
+  --sidebar-border: oklch(0.9 0.016 255.585);
+  --sidebar-ring: oklch(0.551 0.217 262.881);
+}
+
+.dark {
+  --background: oklch(0.208 0.042 265.755);
+  --foreground: oklch(0.98 0.004 247.858);
+  --card: oklch(0.278 0.05 265.755);
+  --card-foreground: oklch(0.98 0.004 247.858);
+  --popover: oklch(0.278 0.05 265.755);
+  --popover-foreground: oklch(0.98 0.004 247.858);
+  --primary: oklch(0.669 0.178 262.881);
+  --primary-foreground: oklch(0.985 0.002 247.839);
+  --secondary: oklch(0.278 0.05 265.755);
+  --secondary-foreground: oklch(0.941 0.007 253.065);
+  --muted: oklch(0.344 0.047 265.755);
+  --muted-foreground: oklch(0.707 0.03 256.788);
+  --accent: oklch(0.344 0.047 265.755);
+  --accent-foreground: oklch(0.941 0.007 253.065);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.669 0.178 262.881);
+  --chart-1: oklch(0.669 0.178 262.881);
+  --chart-2: oklch(0.555 0.191 293.091);
+  --chart-3: oklch(0.641 0.189 225.609);
+  --chart-4: oklch(0.765 0.15 244.601);
+  --chart-5: oklch(0.88 0.135 236.25);
+  --sidebar: oklch(0.278 0.05 265.755);
+  --sidebar-foreground: oklch(0.98 0.004 247.858);
+  --sidebar-primary: oklch(0.669 0.178 262.881);
+  --sidebar-primary-foreground: oklch(0.985 0.002 247.839);
+  --sidebar-accent: oklch(0.344 0.047 265.755);
+  --sidebar-accent-foreground: oklch(0.941 0.007 253.065);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.669 0.178 262.881);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* ─── About dev section (port of CSS/admin.css aion-*) ─── */
+.aion-dev-section {
+  position: relative;
+  padding: 80px 20px;
+  background: linear-gradient(135deg, #0a0a0f 0%, #12121a 100%);
+  overflow: hidden;
+}
+
+.aion-bg-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  z-index: 0;
+  animation: aionGridMove 20s linear infinite;
+}
+
+.aion-bg-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at 20% 30%, rgba(0, 255, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(255, 0, 255, 0.15) 0%, transparent 50%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.aion-dev-container {
+  position: relative;
+  z-index: 10;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.aion-section-title {
+  font-family: var(--font-orbitron), "Trebuchet MS", sans-serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 700;
+  color: #00ffff;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+  text-align: center;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.aion-section-title::before {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #00ffff, transparent);
+}
+
+.aion-section-subtitle {
+  text-align: center;
+  color: #8a8a9f;
+  font-size: 1rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 60px;
+  font-weight: 500;
+}
+
+.aion-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 40px;
+  margin-top: 60px;
+}
+
+.aion-team-card {
+  background: #12121a;
+  border: 2px solid rgba(0, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.aion-team-card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.aion-team-card:hover {
+  transform: translateY(-10px);
+  border-color: #00ffff;
+  box-shadow: 0 20px 60px rgba(0, 255, 255, 0.3);
+}
+
+.aion-team-card:hover::before {
+  opacity: 1;
+}
+
+.aion-card-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #00ffff, #ff00ff, #ffff00, #00ffff);
+  background-size: 200% 100%;
+  animation: aionShimmer 3s linear infinite;
+}
+
+.aion-card-header {
+  margin-bottom: 30px;
+  text-align: center;
+  position: relative;
+}
+
+.aion-name {
+  font-family: var(--font-orbitron), "Trebuchet MS", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #e0e0e0;
+  margin-bottom: 8px;
+  line-height: 1.2;
+  transition: all 0.3s ease;
+}
+
+.aion-name a {
+  color: #e0e0e0;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.aion-name a:hover {
+  color: #00ffff;
+  transform: scale(1.05);
+}
+
+.aion-degree {
+  font-size: 1.1rem;
+  color: #ff00ff;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 25px;
+}
+
+.aion-divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00ffff, transparent);
+  margin: 25px auto;
+}
+
+.aion-contact-info {
+  margin-top: 30px;
+  position: relative;
+}
+
+.aion-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: rgba(0, 255, 255, 0.05);
+  border-radius: 12px;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.aion-contact-item:hover {
+  background: rgba(0, 255, 255, 0.1);
+  border-color: rgba(0, 255, 255, 0.3);
+  transform: translateX(5px);
+}
+
+.aion-contact-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #00ffff, #ff00ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.aion-contact-details {
+  flex: 1;
+}
+
+.aion-contact-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #8a8a9f;
+  margin-bottom: 3px;
+}
+
+.aion-contact-value {
+  font-size: 15px;
+  color: #e0e0e0;
+  font-weight: 500;
+}
+
+.aion-contact-value a {
+  color: #e0e0e0;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.aion-contact-value a:hover {
+  color: #00ffff;
+}
+
+.aion-corner-accent {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 2px solid #00ffff;
+  opacity: 0.3;
+}
+
+.aion-corner-tl {
+  top: 20px;
+  left: 20px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.aion-corner-br {
+  bottom: 20px;
+  right: 20px;
+  border-left: none;
+  border-top: none;
+}
+
+@media (max-width: 768px) {
+  .aion-dev-section {
+    padding: 60px 15px;
+  }
+  .aion-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .aion-team-card {
+    padding: 30px 20px;
+  }
+  .aion-section-title {
+    font-size: 2rem;
+  }
+  .aion-name {
+    font-size: 1.5rem;
+  }
+}
+
+@keyframes aionGridMove {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(50px, 50px);
+  }
+}
+
+@keyframes aionShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes deadlinePulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 14px 4px rgba(239, 68, 68, 0.25);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-30px) scale(1.05);
+  }
+}
+
+@keyframes float-delay {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-25px) scale(1.03);
+  }
+}
+
+@keyframes particle-float {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(var(--tx), var(--ty)) rotate(180deg);
+    opacity: 0.6;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.8));
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slot-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
+
+.slot-1 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.slot-2 {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
