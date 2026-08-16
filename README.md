@@ -1,4 +1,4 @@
-# AION 2K26 — Frontend
+# AION 2K26 : Frontend
 
 Frontend for **AION 2K26**, the National Level Technical Symposium of the
 Department of Artificial Intelligence, St. Joseph's College (Autonomous),
@@ -11,7 +11,7 @@ Built as a modern rebuild of the original static HTML site:
 - **react-hook-form** + **zod** for all forms
 - **sonner** toasts, `next/font` (Outfit)
 
-Backend: FastAPI + Motor (async MongoDB) — see
+Backend: FastAPI + Motor (async MongoDB) - see
 `E:\AION WINTER\BACKEND\Backend-AION2K26-Winter`.
 
 ## Table of Contents
