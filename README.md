@@ -1,4 +1,4 @@
-# AION 2K26 — Frontend
+# AION 2K26 : Frontend
 
 Frontend for **AION 2K26**, the National Level Technical Symposium of the
 Department of Artificial Intelligence, St. Joseph's College (Autonomous),
@@ -13,8 +13,13 @@ Built as a modern rebuild of the original static HTML site:
 - **sonner** toasts, `aionAlert` (SweetAlert2) for confirmations
 - **xlsx** for Excel exports, `next/font` (Outfit)
 
+<<<<<<< HEAD
 Backend: FastAPI + SQLAlchemy 2.0 (async PostgreSQL) — see
 `E:\AION WINTER\Backend AION2K26`.
+=======
+Backend: FastAPI + Motor (async MongoDB) - see
+`E:\AION WINTER\BACKEND\Backend-AION2K26-Winter`.
+>>>>>>> e2aaf0297ff415e71b6846cdcd974aaa80f509f4
 
 ## Table of Contents
 
