@@ -2,31 +2,50 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Menu, X, ChevronDown, LogOut, User, Lock } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { clearAllAuth, getAdminToken } from "@/lib/auth";
+import { clearAllAuth, getAdminToken, getAdminRole } from "@/lib/auth";
 
 const NAV_LINKS = [
   { href: "/admin", label: "Dashboard" },
-  { href: "/admin/adminreg", label: "Register Admin" },
+  { href: "/admin/adminreg", label: "Register Admin", role: "1" as const },
 ];
 
 export function AdminNav() {
   const router = useRouter();
   const pathname = usePathname();
   const [loggedIn, setLoggedIn] = useState(false);
+  const [role, setRole] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setLoggedIn(getAdminToken() !== null);
+    setRole(getAdminRole());
   }, [pathname]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
     clearAllAuth();
     router.push("/admin/login");
+    setDropdownOpen(false);
   };
+
+  const filteredNavLinks = NAV_LINKS.filter(
+    (link) => !link.role || (link.role && role === link.role)
+  );
 
   return (
     <nav className="border-b bg-white/80 shadow-sm backdrop-blur">
@@ -46,7 +65,7 @@ export function AdminNav() {
 
           <div className="hidden items-center gap-6 text-sm font-medium md:flex">
             {loggedIn &&
-              NAV_LINKS.map((link) => (
+              filteredNavLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -62,13 +81,47 @@ export function AdminNav() {
               ))}
 
             {loggedIn ? (
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="rounded-lg bg-blue-600 px-4 py-1.5 font-semibold text-white transition hover:bg-blue-700"
-              >
-                Logout
-              </button>
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  type="button"
+                  onClick={() => setDropdownOpen((open) => !open)}
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+                  aria-expanded={dropdownOpen}
+                  aria-haspopup="true"
+                >
+                  <User className="h-4 w-4" />
+                  <span className="hidden sm:inline">
+                    {role === "1" ? "Super Admin" : "Moderator"}
+                  </span>
+                  <ChevronDown className={cn("h-4 w-4 transition-transform", dropdownOpen && "rotate-180")} />
+                </button>
+
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 rounded-md border bg-white py-1 shadow-lg z-50">
+                    <div className="px-4 py-2 border-b">
+                      <p className="text-xs font-medium text-gray-500 uppercase">
+                        {role === "1" ? "Super Admin" : "Moderator"}
+                      </p>
+                    </div>
+                    <Link
+                      href="/admin/changepassword"
+                      onClick={() => setDropdownOpen(false)}
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <Lock className="h-4 w-4" />
+                      Change Password
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <span className="text-sm text-gray-600">Admin Portal</span>
             )}
@@ -93,7 +146,7 @@ export function AdminNav() {
           <div className="mt-3 space-y-3 border-t pt-3 text-sm font-medium md:hidden">
             {loggedIn ? (
               <>
-                {NAV_LINKS.map((link) => (
+                {filteredNavLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
@@ -108,13 +161,24 @@ export function AdminNav() {
                     {link.label}
                   </Link>
                 ))}
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="block w-full rounded-lg bg-blue-600 py-2 text-center font-semibold text-white transition hover:bg-blue-700"
-                >
-                  Logout
-                </button>
+                <div className="border-t pt-3">
+                  <Link
+                    href="/admin/changepassword"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-2 px-2 py-2 text-gray-700 hover:text-blue-600"
+                  >
+                    <Lock className="h-4 w-4" />
+                    Change Password
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="flex w-full items-center gap-2 px-2 py-2 text-red-600 hover:text-red-700"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                  </button>
+                </div>
               </>
             ) : (
               <span className="block text-gray-600">Admin Portal</span>

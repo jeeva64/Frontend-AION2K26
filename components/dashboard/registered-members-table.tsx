@@ -29,7 +29,11 @@ function groupByEvent(candidates: RegisteredStudent[]): TeamGroup[] {
     ]) {
       if (!entry.event || !entry.slot) continue;
       if (!teams[entry.event]) {
-        teams[entry.event] = { event: entry.event, slot: entry.slot, participants: [] };
+        teams[entry.event] = {
+          event: entry.event,
+          slot: entry.slot,
+          participants: [],
+        };
       }
       teams[entry.event].participants.push(doc);
     }
@@ -40,19 +44,18 @@ function groupByEvent(candidates: RegisteredStudent[]): TeamGroup[] {
 
 function SlotBadge({ slot }: { slot: EventSlot }) {
   if (slot === "1") {
-    return (
-      <span className="slot-badge slot-1">Slot 1</span>
-    );
+    return <span className="slot-badge slot-1">Slot 1</span>;
   }
   if (slot === "2") {
-    return (
-      <span className="slot-badge slot-2">Slot 2</span>
-    );
+    return <span className="slot-badge slot-2">Slot 2</span>;
   }
   return (
     <span
       className="slot-badge"
-      style={{ background: "linear-gradient(135deg,#667eea 0%,#f5576c 100%)", color: "white" }}
+      style={{
+        background: "linear-gradient(135deg,#667eea 0%,#f5576c 100%)",
+        color: "white",
+      }}
     >
       Both Slots
     </span>
@@ -120,7 +123,7 @@ export function RegisteredMembersTable({
                           )}
                         </div>
                         <div className="mt-0.5 text-xs text-slate-500">
-                          📞 {p.mobile || "—"}
+                          📞 {p.mobile || "-"}
                         </div>
                       </div>
                     ))}

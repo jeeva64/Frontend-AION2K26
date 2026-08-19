@@ -60,6 +60,23 @@
   --color-warning-yellow: #f59e0b;
   --color-error-red: #ef4444;
 
+  /* AION admin theme tokens */
+  --color-aion-bg: var(--aion-bg);
+  --color-aion-card: var(--aion-card);
+  --color-aion-primary: var(--aion-primary);
+  --color-aion-primary-hover: var(--aion-primary-hover);
+  --color-aion-primary-light: var(--aion-primary-light);
+  --color-aion-text: var(--aion-text);
+  --color-aion-muted: var(--aion-muted);
+  --color-aion-border: var(--aion-border);
+  --color-aion-success: var(--aion-success);
+  --color-aion-success-hover: #047857;
+  --color-aion-success-light: var(--aion-success-light);
+  --color-aion-warning: var(--aion-warning);
+  --color-aion-warning-light: var(--aion-warning-light);
+  --color-aion-error: var(--aion-error);
+  --color-aion-error-light: var(--aion-error-light);
+
   /* AION 2K26 animations */
   --animate-float: float 6s ease-in-out infinite;
   --animate-float-delay: float-delay 7s ease-in-out 1.5s infinite;
@@ -533,4 +550,160 @@
 .slot-2 {
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
   color: white;
+}
+
+/* ============================================================
+   AION 2K26 SUPER ADMIN - Clean Professional Light Theme
+   ============================================================ */
+:root {
+  /* AION Light Theme Colors */
+  --aion-bg: #f8fafc;
+  --aion-card: #ffffff;
+  --aion-primary: #2563eb;
+  --aion-primary-hover: #1d4ed8;
+  --aion-primary-light: #dbeafe;
+  --aion-text: #1e293b;
+  --aion-muted: #64748b;
+  --aion-border: #e2e8f0;
+  --aion-success: #059669;
+  --aion-success-light: #d1fae5;
+  --aion-warning: #d97706;
+  --aion-warning-light: #fef3c7;
+  --aion-error: #dc2626;
+  --aion-error-light: #fee2e2;
+  --aion-focus: #3b82f6;
+}
+
+.font-orbitron { font-family: var(--font-orbitron), 'Trebuchet MS', sans-serif; }
+.font-rajdhani { font-family: var(--font-rajdhani), sans-serif; }
+
+.bg-aion-bg { background: var(--aion-bg); }
+.bg-aion-card { background: var(--aion-card); }
+.border-aion { border-color: var(--aion-border); }
+.text-aion-primary { color: var(--aion-primary); }
+.text-aion-text { color: var(--aion-text); }
+.text-aion-muted { color: var(--aion-muted); }
+
+/* Subtle background pattern */
+.aion-bg-pattern {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(37, 99, 235, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Card glow animation - updated for light theme */
+.aion-card-glow {
+  position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--aion-primary), var(--aion-success), var(--aion-warning), var(--aion-primary));
+  background-size: 200% 100%;
+  animation: aionShimmer 4s linear infinite;
+}
+
+@keyframes aionShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ============================================================
+   SweetAlert2 AION Light Theme Overrides
+   ============================================================ */
+.aion-swal-popup {
+  border-radius: 16px !important;
+  border: 2px solid var(--aion-border) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1) !important;
+  background: var(--aion-card) !important;
+  font-family: var(--font-rajdhani), sans-serif !important;
+}
+
+.aion-swal-title {
+  font-family: var(--font-orbitron), sans-serif !important;
+  color: var(--aion-primary) !important;
+  font-size: 1.5rem !important;
+  letter-spacing: 1px !important;
+}
+
+.aion-swal-content {
+  color: var(--aion-text) !important;
+  font-size: 1rem !important;
+  line-height: 1.6 !important;
+}
+
+.aion-swal-confirm {
+  background: var(--aion-primary) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 12px 28px !important;
+  font-weight: 600 !important;
+  font-family: var(--font-rajdhani), sans-serif !important;
+  color: #ffffff !important;
+  transition: all 0.3s ease !important;
+}
+
+.aion-swal-confirm:hover {
+  transform: translateY(-2px) !important;
+  background: var(--aion-primary-hover) !important;
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3) !important;
+}
+
+.aion-swal-cancel {
+  background: #f1f5f9 !important;
+  border: 1px solid var(--aion-border) !important;
+  border-radius: 10px !important;
+  padding: 12px 28px !important;
+  font-weight: 500 !important;
+  font-family: var(--font-rajdhani), sans-serif !important;
+  color: var(--aion-text) !important;
+  transition: all 0.3s ease !important;
+}
+
+.aion-swal-cancel:hover {
+  background: #e2e8f0 !important;
+}
+
+.aion-swal-icon {
+  filter: drop-shadow(0 0 10px currentColor);
+}
+
+/* ============================================================
+   Mobile Responsive for Admin Dashboard
+   ============================================================ */
+@media (max-width: 1023px) {
+  .admin-tabs { gap: 0; }
+  .tab-btn { padding: 12px 16px; font-size: 0.875rem; }
+}
+
+@media (max-width: 767px) {
+  .admin-tabs {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .admin-tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    min-width: max-content;
+    padding: 12px 20px;
+  }
+  .tab-btn span { display: none; } /* Icons only on mobile */
+
+  .stats-grid { grid-template-columns: 1fr; }
+  .event-grid { grid-template-columns: repeat(2, 1fr); }
+  .data-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .data-table thead th:first-child,
+  .data-table tbody td:first-child { position: sticky; left: 0; z-index: 1; }
+
+  .college-form { grid-template-columns: 1fr; }
+  .event-cards { flex-direction: column; }
+
+  /* SweetAlert mobile */
+  .aion-swal-popup {
+    margin: 1rem !important;
+    max-height: 90vh !important;
+  }
 }

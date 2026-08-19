@@ -6,13 +6,15 @@ Tiruchirappalli.
 
 Built as a modern rebuild of the original static HTML site:
 
-- **Next.js 15** (App Router) + **React 19** + **TypeScript** (strict)
+- **Next.js 16** (App Router) + **React 19** + **TypeScript** (strict)
 - **Tailwind CSS v4** + **shadcn/ui** (Base UI based, not Radix)
+- **@tanstack/react-query** for server state
 - **react-hook-form** + **zod** for all forms
-- **sonner** toasts, `next/font` (Outfit)
+- **sonner** toasts, `aionAlert` (SweetAlert2) for confirmations
+- **xlsx** for Excel exports, `next/font` (Outfit)
 
-Backend: FastAPI + Motor (async MongoDB) — see
-`E:\AION WINTER\BACKEND\Backend-AION2K26-Winter`.
+Backend: FastAPI + SQLAlchemy 2.0 (async PostgreSQL) — see
+`E:\AION WINTER\Backend AION2K26`.
 
 ## Table of Contents
 
@@ -65,7 +67,7 @@ Run each in its own terminal window.
 
 | Service     | Command                                                                   | URL                    |
 | ----------- | ------------------------------------------------------------------------- | ---------------------- |
-| Backend     | `E:\AION WINTER\BACKEND\Backend-AION2K26-Winter\.venv\Scripts\python run.py` | http://localhost:5000  |
+| Backend     | `E:\AION WINTER\Backend AION2K26\.venv\Scripts\python run.py`         | http://localhost:5000  |
 | Frontend    | `npm run dev` (from this folder)                                          | http://localhost:3000  |
 
 Backend health check: `GET http://localhost:5000/health`. Interactive API
@@ -75,7 +77,7 @@ The very first Super Admin cannot be created through the API. Seed it once via
 the backend helper:
 
 ```powershell
-E:\AION WINTER\BACKEND\Backend-AION2K26-Winter\.venv\Scripts\python scripts\create_super_admin.py SA1 Root "YourPassword"
+E:\AION WINTER\Backend AION2K26\.venv\Scripts\python scripts\create_super_admin.py SA1 Root "YourPassword"
 ```
 
 ## Scripts
@@ -115,27 +117,45 @@ app/
   (public)/             Public pages: page (landing), about, brochure,
                         register, login, layout
   dashboard/            Leader dashboard (layout + page)
-  admin/                Admin portal: login, page, adminreg, layout
+  admin/                Admin portal
+    layout.tsx          AdminNav + light gradient background (server)
+    login/              Admin login
+    (dashboard)/        Protected admin area (auth layout wrapper)
+      layout.tsx        AdminProviders + AdminLayout (client guard)
+      page.tsx          Dashboard (stats)
+      adminreg/         Super Admin-only moderator creation
 components/
   ui/                   shadcn/ui components (Base UI based)
+                        ToasterClient.tsx (Sonner SSR-safe wrapper)
   layout/               navbar, footer, skip-link
   auth/                 auth-shell
   dashboard/            stats-banner, team-registration-form,
                         registered-members-table, food-badge, dashboard-nav
-  admin/                admin-nav
+  admin/                AdminLayout.tsx (client auth guard + tabs),
+                        AdminTabs.tsx (tab switcher),
+                        DashboardPanel.tsx (stats cards),
+                        ViewTeamPanel.tsx (college/dept search, grouped table),
+                        ViewEventPanel.tsx (event search, team cards),
+                        ManageCollegesPanel.tsx (add/edit colleges, auto-ID)
 lib/
   constants.ts          API base, events, limits, enums, labels
+  constants/admin.ts    EVENT_SLOT_MAP, DEPARTMENTS (objects), TN_DISTRICTS
   api-client.ts         fetch wrapper (envelope handling, typed errors)
   auth.ts               localStorage token helpers + redirects
   candidate.ts          client-side conflict/validation rules
   types.ts              shared TypeScript types
+  alerts.ts             aionAlert (SweetAlert2 wrapper)
+  export.ts             Excel export helpers (xlsx)
   utils.ts              cn() helper
 services/
   auth.ts               leader register/login
   team.ts               register team, candidates, leader stats
-  college.ts            list colleges, bulk-add colleges
+  college.ts            list colleges, bulk-add colleges, update college
   admin.ts              admin login/register, view team, event regs,
-                        delete team(s), dashboard stats
+                        delete team(s), dashboard stats, leader college depts
+hooks/
+  useViewTeam.ts        React Query hook for team search + delete
+  useViewEventRegs.ts   React Query hook for event regs + delete
 public/                 images, favicon, PDFs
 ```
 
@@ -164,6 +184,8 @@ Extra fields live **at the envelope top level**, not inside a `data` object:
 | `POST /getcandidates`                | `totalStudents`, `registeredEvents`, `data`|
 | `GET /getcollege`                    | `data`                                     |
 | `POST /addcollege`                   | `count`                                    |
+| `PUT /admin/college/{college_id}`    | — (message only)                           |
+| `GET /admin/leader-college-depts`    | `data`                                     |
 | `POST /admin/viewteam`               | `data`                                     |
 | `POST /admin/vieweventregs`          | `event`, `totalTeams`, `data`              |
 | `DELETE /admin/deleteteam/{leader_id}`| `deletedCount`                            |
@@ -231,7 +253,7 @@ Normalized to kebab-case in `public/`: `logo.png`, `favicon.png`,
 
 ## Related Repositories
 
-- **Backend:** `E:\AION WINTER\BACKEND\Backend-AION2K26-Winter`
+- **Backend:** `E:\AION WINTER\Backend AION2K26`
 - **Reference static site (keep untouched):** `E:\AION WINTER\FRONTEND\`
 
 See also [`ARCHITECTURE.md`](./ARCHITECTURE.md) for the frontend API contract

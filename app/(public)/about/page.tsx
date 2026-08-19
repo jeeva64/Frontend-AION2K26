@@ -45,19 +45,35 @@ function CheckIcon({ className }: { className?: string }) {
       stroke="currentColor"
       viewBox="0 0 24 24"
     >
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M5 13l4 4L19 7"
+      />
     </svg>
   );
 }
 
 function WhyCard() {
   const points = [
-    { icon: "bg-blue-500", text: "Industry-oriented curriculum designed for real-world applications" },
+    {
+      icon: "bg-blue-500",
+      text: "Industry-oriented curriculum designed for real-world applications",
+    },
     { icon: "bg-purple-500", text: "Research-focused learning environment" },
-    { icon: "bg-green-500", text: "Competitive symposium and innovation culture" },
+    {
+      icon: "bg-green-500",
+      text: "Competitive symposium and innovation culture",
+    },
   ];
   return (
-    <div className={cn(GLASS_CARD, "animate-fade-in-up p-8 [animation-delay:0.2s]")}>
+    <div
+      className={cn(
+        GLASS_CARD,
+        "animate-fade-in-up p-8 [animation-delay:0.2s]",
+      )}
+    >
       <h3 className="mb-6 flex items-center gap-2 text-2xl font-bold">
         <span className="text-2xl">🎯</span> Why AI @ SJC?
       </h3>
@@ -67,7 +83,7 @@ function WhyCard() {
             <span
               className={cn(
                 "mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-white",
-                point.icon
+                point.icon,
               )}
             >
               <CheckIcon />
@@ -97,8 +113,9 @@ function WhoWeAre() {
           <div className="space-y-4 text-lg text-slate-300">
             <p>
               The Department of Artificial Intelligence was established in{" "}
-              <span className="font-semibold text-blue-400">2024</span>, offering
-              B.Sc. (AI &amp; ML) and M.Sc. (Artificial Intelligence) programs.
+              <span className="font-semibold text-blue-400">2024</span>,
+              offering B.Sc. (AI &amp; ML) and M.Sc. (Artificial Intelligence)
+              programs.
             </p>
             <p>
               Our focus lies in academic excellence, applied research, and
@@ -106,8 +123,8 @@ function WhoWeAre() {
               inter-college competitions.
             </p>
             <p>
-              We nurture students to become ethical AI professionals equipped with
-              cutting-edge technical skills and problem-solving abilities.
+              We nurture students to become ethical AI professionals equipped
+              with cutting-edge technical skills and problem-solving abilities.
             </p>
           </div>
         </div>
@@ -162,7 +179,7 @@ function VisionMission() {
             <div
               className={cn(
                 "mb-6 flex h-16 w-16 items-center justify-center rounded-2xl",
-                card.iconBg
+                card.iconBg,
               )}
             >
               <span className="text-3xl">{card.icon}</span>
@@ -272,7 +289,7 @@ function FacultySection() {
                 <span
                   className={cn(
                     "rounded-full px-3 py-1 text-xs text-white",
-                    member.overlay
+                    member.overlay,
                   )}
                 >
                   {member.badge}
@@ -294,11 +311,36 @@ function FacultySection() {
 }
 
 const COMMITTEE = [
-  { role: "Chairman", name: "Nandakumaaran N I", degree: "I M.Sc AI", phone: "+91 90801 86740" },
-  { role: "Secretary", name: "Shri Harish V M", degree: "I M.Sc AI", phone: null },
-  { role: "Secretary", name: "Vijayalaxmi K", degree: "II B.Sc AI & ML", phone: null },
-  { role: "Secretary", name: "Jeeva Loganathan", degree: "I M.Sc AI", phone: null },
-  { role: "Secretary", name: "William James A", degree: "I M.Sc AI", phone: null },
+  {
+    role: "Chairman",
+    name: "Nandakumaaran N I",
+    degree: "II M.Sc AI",
+    phone: "+91 90801 86740",
+  },
+  {
+    role: "Secretary",
+    name: "Shri Harish V M",
+    degree: "II M.Sc AI",
+    phone: null,
+  },
+  {
+    role: "Secretary",
+    name: "Vijayalaxmi K",
+    degree: "III B.Sc AI & ML",
+    phone: null,
+  },
+  {
+    role: "Secretary",
+    name: "Jeeva Loganathan",
+    degree: "II M.Sc AI",
+    phone: null,
+  },
+  {
+    role: "Secretary",
+    name: "William James A",
+    degree: "II M.Sc AI",
+    phone: null,
+  },
 ];
 
 function CommitteeSection() {
@@ -315,12 +357,20 @@ function CommitteeSection() {
 
       <div className="grid place-items-center gap-8 md:grid-cols-2 lg:grid-cols-3">
         {COMMITTEE.map((member) => (
-          <div key={member.name} className={cn(GLASS_CARD, "w-full max-w-[320px] p-6 text-center")}>
-            <h4 className="mb-2 text-xl font-bold text-blue-400">{member.role}</h4>
+          <div
+            key={member.name}
+            className={cn(GLASS_CARD, "w-full max-w-[320px] p-6 text-center")}
+          >
+            <h4 className="mb-2 text-xl font-bold text-blue-400">
+              {member.role}
+            </h4>
             <p className="mb-1 text-lg font-semibold">{member.name}</p>
             <p className="mb-2 text-sm text-slate-400">{member.degree}</p>
             {member.phone && (
-              <a href="tel:+919080186740" className="text-sm text-slate-300 hover:text-blue-400">
+              <a
+                href="tel:+919080186740"
+                className="text-sm text-slate-300 hover:text-blue-400"
+              >
                 📞 {member.phone}
               </a>
             )}
@@ -336,16 +386,9 @@ function DevSection() {
     {
       name: "Jeeva Loganathan",
       link: "https://www.linkedin.com/in/jeeva-l/",
-      degree: "I M.Sc Artificial Intelligence",
+      degree: "II M.Sc Artificial Intelligence",
       phone: "+91 99765 78892",
       phoneHref: "tel:+919976578892",
-    },
-    {
-      name: "William James A",
-      link: "https://www.linkedin.com/in/william-james-a-10b126300/",
-      degree: "I M.Sc Artificial Intelligence",
-      phone: "+91 80565 60315",
-      phoneHref: "tel:+918056560315",
     },
   ];
   return (
@@ -359,11 +402,21 @@ function DevSection() {
           {devs.map((dev) => (
             <div key={dev.name} className="aion-team-card">
               <div className="aion-card-glow" aria-hidden="true" />
-              <div className="aion-corner-accent aion-corner-tl" aria-hidden="true" />
-              <div className="aion-corner-accent aion-corner-br" aria-hidden="true" />
+              <div
+                className="aion-corner-accent aion-corner-tl"
+                aria-hidden="true"
+              />
+              <div
+                className="aion-corner-accent aion-corner-br"
+                aria-hidden="true"
+              />
               <div className="aion-card-header">
                 <h3 className="aion-name">
-                  <Link href={dev.link} target="_blank" rel="noopener noreferrer">
+                  <Link
+                    href={dev.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {dev.name}
                   </Link>
                 </h3>
@@ -372,7 +425,9 @@ function DevSection() {
               <div className="aion-divider" aria-hidden="true" />
               <div className="aion-contact-info">
                 <div className="aion-contact-item">
-                  <div className="aion-contact-icon" aria-hidden="true">📱</div>
+                  <div className="aion-contact-icon" aria-hidden="true">
+                    📱
+                  </div>
                   <div className="aion-contact-details">
                     <div className="aion-contact-label">Phone</div>
                     <div className="aion-contact-value">

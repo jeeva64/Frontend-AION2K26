@@ -113,8 +113,14 @@ export interface AdminLoginInput {
 export interface AdminRegisterInput {
   adminId: string;
   name: string;
-  role: 1 | 2;
+  role: 2;
   password: string;
+}
+
+export interface AdminChangePasswordInput {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
 }
 
 export interface Admin {
@@ -130,7 +136,22 @@ export interface ViewTeamFilter {
   department?: Department | "";
 }
 
+export interface CollegeStat {
+  college: string;
+  department: string;
+  members: number;
+  veg: number;
+  nonVeg: number;
+}
+
 export interface DashboardStats {
-  stats?: Record<string, number>;
-  [key: string]: unknown;
+  totalMembers: number;
+  totalTeams: number;
+  vegCount: number;
+  nonVegCount: number;
+  ugCount: number;
+  pgCount: number;
+  eventCounts: Record<string, number>;
+  collegeStats: CollegeStat[];
+  deptCounts: Record<string, number>;
 }

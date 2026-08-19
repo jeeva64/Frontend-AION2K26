@@ -17,11 +17,16 @@ import { adminRegister } from "@/services/admin";
 const adminRegSchema = z.object({
   adminId: z.string().trim().min(1, "Admin ID is required"),
   name: z.string().trim().min(1, "Name is required"),
-  role: z.string().min(1, "Please select a role"),
+  role: z.literal("2", { message: "Role must be Moderator" }),
   password: z
     .string()
-    .min(6, "Password must be at least 6 characters")
-    .max(128, "Password must be at most 128 characters"),
+    .min(8, "Password must be at least 8 characters")
+    .max(128, "Password must be at most 128 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/[0-9]/, "Password must contain at least one digit")
+    .regex(/[!@#$%^&*()_+\-=[\]{}|;:,.<>?]/, "Password must contain at least one special character")
+    .regex(/^\S*$/, "Password must not contain spaces"),
 });
 
 type AdminRegFormValues = z.infer<typeof adminRegSchema>;
@@ -37,7 +42,7 @@ export default function AdminRegisterPage() {
     formState: { errors },
   } = useForm<AdminRegFormValues>({
     resolver: zodResolver(adminRegSchema),
-    defaultValues: { adminId: "", name: "", role: "", password: "" },
+    defaultValues: { adminId: "", name: "", role: "2", password: "" },
   });
 
   useEffect(() => {
@@ -68,12 +73,12 @@ export default function AdminRegisterPage() {
         {
           adminId: values.adminId,
           name: values.name,
-          role: Number(values.role) as 1 | 2,
+          role: 2,
           password: values.password,
         },
         token
       );
-      toast.success("Admin registered successfully");
+      toast.success("Moderator registered successfully");
       router.push("/admin");
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
@@ -118,9 +123,9 @@ export default function AdminRegisterPage() {
               />
             </svg>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">Register Admin</h2>
+          <h2 className="text-3xl font-bold text-gray-900">Register Moderator</h2>
           <p className="mt-2 text-gray-500">
-            Create a new organizer or super admin account
+            Create a new moderator account
           </p>
         </div>
 
@@ -147,7 +152,7 @@ export default function AdminRegisterPage() {
             <Input
               id="name"
               type="text"
-              placeholder="Enter admin name"
+              placeholder="Enter moderator name"
               autoComplete="name"
               aria-invalid={!!errors.name}
               {...register("name")}
@@ -162,12 +167,12 @@ export default function AdminRegisterPage() {
               className="h-8 w-full rounded-lg border border-input bg-white px-2.5 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
               aria-invalid={!!errors.role}
               {...register("role")}
+              disabled
             >
-              <option value="">Select Role</option>
-              <option value="1">Super Admin</option>
               <option value="2">Moderator</option>
             </select>
             {errors.role && <FieldError>{errors.role.message}</FieldError>}
+            <p className="mt-1 text-xs text-gray-500">Only Moderators can be created. Super Admin must be created via seeder.</p>
           </Field>
 
           <Field>
@@ -190,7 +195,7 @@ export default function AdminRegisterPage() {
             disabled={isSubmitting}
             className="w-full py-3 text-base"
           >
-            {isSubmitting ? "Registering..." : "Register Admin"}
+            {isSubmitting ? "Registering..." : "Register Moderator"}
           </Button>
         </form>
       </div>

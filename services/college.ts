@@ -22,3 +22,16 @@ export async function addColleges(
   const raw = body as unknown as { count?: number };
   return { count: raw.count, message: body.message };
 }
+
+export async function updateCollege(
+  collegeId: string,
+  data: { name?: string; state?: string; district?: string },
+  token: string
+): Promise<{ message?: string }> {
+  const body = await api<unknown>(`/admin/college/${encodeURIComponent(collegeId)}`, {
+    method: "PUT",
+    token,
+    body: data,
+  });
+  return { message: body.message };
+}

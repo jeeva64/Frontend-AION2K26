@@ -1,21 +1,22 @@
-# SEO — AION 2K26 Frontend
+# SEO - AION 2K26 Frontend
 
 Search-engine optimization notes for the AION 2K26 Next.js frontend: what is
 already in place, current per-route metadata, gaps, and recommended additions.
 
-- [Current State](#current-state)
-- [Current Metadata by Route](#current-metadata-by-route)
-- [What's Already Good](#whats-already-good)
-- [Gaps](#gaps)
-- [Recommendations](#recommendations)
-  - [1. metadataBase](#1-metadatabase)
-  - [2. Open Graph & Twitter cards](#2-open-graph--twitter-cards)
-  - [3. robots.txt (`app/robots.ts`)](#3-robotstxt-approbotsts)
-  - [4. sitemap.xml (`app/sitemap.ts`)](#4-sitemapxml-appsitemapts)
-  - [5. Canonical URLs](#5-canonical-urls)
-  - [6. Structured data (JSON-LD)](#6-structured-data-json-ld)
-  - [7. Verify each page](#7-verify-each-page)
-- [Implementation Checklist](#implementation-checklist)
+- [SEO - AION 2K26 Frontend](#seo---aion-2k26-frontend)
+  - [Current State](#current-state)
+  - [Current Metadata by Route](#current-metadata-by-route)
+  - [What's Already Good](#whats-already-good)
+  - [Gaps](#gaps)
+  - [Recommendations](#recommendations)
+    - [1. metadataBase](#1-metadatabase)
+    - [2. Open Graph \& Twitter cards](#2-open-graph--twitter-cards)
+    - [3. robots.txt (`app/robots.ts`)](#3-robotstxt-approbotsts)
+    - [4. sitemap.xml (`app/sitemap.ts`)](#4-sitemapxml-appsitemapts)
+    - [5. Canonical URLs](#5-canonical-urls)
+    - [6. Structured data (JSON-LD)](#6-structured-data-json-ld)
+    - [7. Verify each page](#7-verify-each-page)
+  - [Implementation Checklist](#implementation-checklist)
 
 ## Current State
 

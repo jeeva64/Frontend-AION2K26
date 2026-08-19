@@ -1,5 +1,6 @@
 import { api } from "@/lib/api-client";
 import type {
+  AdminChangePasswordInput,
   AdminLoginInput,
   AdminRegisterInput,
   DashboardStats,
@@ -38,6 +39,19 @@ export async function adminRegister(
   token: string
 ): Promise<{ message?: string }> {
   const body = await api<unknown>("/admin/adminreg", {
+    method: "POST",
+    token,
+    body: input,
+  });
+  return { message: body.message };
+}
+
+/** Requires any admin Bearer token. */
+export async function adminChangePassword(
+  input: AdminChangePasswordInput,
+  token: string
+): Promise<{ message?: string }> {
+  const body = await api<unknown>("/admin/changepassword", {
     method: "POST",
     token,
     body: input,
@@ -107,6 +121,22 @@ export async function deleteTeamByEvent(
   };
 }
 
+export interface CollegeDepartments {
+  college: string;
+  departments: string[];
+}
+
+/** Returns distinct college+department pairs from registered leader accounts. */
+export async function getLeaderCollegeDepts(
+  token: string
+): Promise<CollegeDepartments[]> {
+  const body = await api<CollegeDepartments[]>("/admin/leader-college-depts", {
+    method: "GET",
+    token,
+  });
+  return Array.isArray(body.data) ? body.data : [];
+}
+
 export async function getDashboardStats(
   token: string
 ): Promise<DashboardStats> {
@@ -114,6 +144,16 @@ export async function getDashboardStats(
     method: "GET",
     token,
   });
-  const raw = body as unknown as { stats?: Record<string, number> };
-  return { stats: raw.stats };
+  const raw = body as unknown as { stats?: DashboardStats };
+  return raw.stats ?? {
+    totalMembers: 0,
+    totalTeams: 0,
+    vegCount: 0,
+    nonVegCount: 0,
+    ugCount: 0,
+    pgCount: 0,
+    eventCounts: {},
+    collegeStats: [],
+    deptCounts: {},
+  };
 }

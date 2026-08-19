@@ -19,7 +19,7 @@ API contract, auth, validation, and conventions.
 ```
 +----------------+      +-----------------+      +------------------+      +-------------+
 |  Next.js pages | ---> |  services/*.ts  | ---> | lib/api-client.ts| ---> | FastAPI backend |
-|  (App Router)  |      |  (typed fns)    |      |  (fetch wrapper) |      | + MongoDB     |
+|  (App Router)  |      |  (typed fns)    |      |  (fetch wrapper) |      | + PostgreSQL    |
 +----------------+      +-----------------+      +------------------+      +-------------+
         |                        |                        |
         |-- components/*         |-- returns envelope      |-- throws ApiError /
@@ -36,8 +36,9 @@ envelope and throws typed errors for the UI to catch.
 ```
 app/                      Next.js App Router
   layout.tsx              Root layout: Outfit + Geist_Mono fonts, metadata,
-                          Toaster (sonner)
-  globals.css             Tailwind v4; @theme inline + :root/.dark tokens
+                          ToasterWrapper (Sonner SSR-safe via dynamic import)
+  globals.css             Tailwind v4; @theme inline + :root/.dark tokens;
+                          AION color palette CSS custom properties
   (public)/               Shared public layout (Navbar + Footer + SkipLink)
     page.tsx              Landing (hero + 8 event cards)
     about/                Department/faculty/committee (Orbitron/Rajdhani)
@@ -47,29 +48,49 @@ app/                      Next.js App Router
   dashboard/              Leader area (guard: leader_token + leader_id)
     layout.tsx            title "Dashboard"
     page.tsx              Stats banner, registered teams, registration form
-  admin/                  Admin area (guard: admin_token)
-    layout.tsx            AdminNav + light gradient background
-    login/                Admin login
-    page.tsx              Dashboard (stats)
-    adminreg/             Super Admin-only moderator creation
+  admin/                  Admin area
+    layout.tsx            AdminNav + light gradient background (server component)
+    login/                Admin login (bypasses admin guard)
+    (dashboard)/          Protected admin route group (auth layout wrapper)
+      layout.tsx          AdminProviders (react-query) + AdminLayout (client guard)
+      page.tsx            Dashboard (stats cards via DashboardPanel)
+      adminreg/           Super Admin-only moderator creation
 
 components/
   ui/                     shadcn/ui (Base UI based): button, card, dialog,
                           alert-dialog, input, label, select, table, tabs,
-                          badge, alert, separator, skeleton, sonner, field
+                          badge, alert, separator, skeleton, sonner, field;
+                          ToasterClient.tsx (Sonner with ssr:false)
   layout/                 navbar.tsx, footer.tsx, skip-link.tsx
   auth/                   auth-shell.tsx (shared auth page shell)
   dashboard/              stats-banner.tsx, team-registration-form.tsx,
                           registered-members-table.tsx, food-badge.tsx,
                           dashboard-nav.tsx
-  admin/                  admin-nav.tsx
+  admin/                  AdminLayout.tsx (client auth guard + tab container),
+                          AdminTabs.tsx (tab switcher importing real panels),
+                          DashboardPanel.tsx (stats cards + login timeline),
+                          ViewTeamPanel.tsx (dynamic college/dept dropdowns,
+                            grouped-by-leader table, delete, Excel export),
+                          ViewEventPanel.tsx (event select, team cards,
+                            remove from event, Excel export),
+                          ManageCollegesPanel.tsx (add new colleges with
+                            auto-generated college IDs, inline edit of
+                            existing colleges, Excel-ready layout)
+
+hooks/
+  useViewTeam.ts          React Query hook: search (college+dept), deleteTeam
+  useViewEventRegs.ts     React Query hook: search (event), deleteByEvent
 
 lib/
   constants.ts            API base, event config, limits, enums, labels
+  constants/admin.ts      EVENT_SLOT_MAP, DEPARTMENTS (object[]), TN_DISTRICTS
   api-client.ts           api() / apiPost(), ApiError / NetworkError
-  auth.ts                 localStorage token helpers, redirectToLogin
+  auth.ts                 localStorage token helpers, redirectToLogin,
+                          isSuperAdmin(), requireSuperAdmin()
   candidate.ts            client-side rules engine
   types.ts                shared TypeScript types
+  alerts.ts               aionAlert (SweetAlert2 wrapper for confirmations)
+  export.ts               Excel export helpers (xlsx)
   utils.ts                cn()
 
 services/
@@ -131,6 +152,8 @@ that are naturally lists or bundled objects.
 | `POST /getcandidates`                | `totalStudents`, `registeredEvents`, `data`| `getCandidates`           |
 | `GET /getcollege`                    | `data` (college list)                      | `getColleges`             |
 | `POST /addcollege`                   | `count`                                    | `addColleges`             |
+| `PUT /admin/college/{college_id}`    | — (message only)                           | `updateCollege`           |
+| `GET /admin/leader-college-depts`    | `data` (college→departments mapping)       | `getLeaderCollegeDepts`   |
 | `POST /admin/viewteam`               | `data` (registration docs)                 | `viewTeam`                |
 | `POST /admin/vieweventregs`          | `event`, `totalTeams`, `data`              | `viewEventRegs`           |
 | `DELETE /admin/deleteteam/{leader_id}`| `deletedCount`                             | `deleteTeam`              |
@@ -162,13 +185,19 @@ and never reach into `body.data?.<topLevelKey>`.
 are `{ name, registerNumber, mobile, degree, foodPreference? }`.
 
 ### `services/college.ts` — colleges
-| Function       | Method | Path         | Auth      | Returns                       |
-| -------------- | ------ | ------------ | --------- | ----------------------------- |
-| `getColleges`  | GET    | `/getcollege`| none      | `College[]`                   |
-| `addColleges`  | POST   | `/addcollege`| Super Admin| `{ count?, message? }`      |
+| Function        | Method | Path                          | Auth       | Returns                       |
+| --------------- | ------ | ----------------------------- | ---------- | ----------------------------- |
+| `getColleges`   | GET    | `/getcollege`                 | none       | `College[]`                   |
+| `addColleges`   | POST   | `/addcollege`                 | Super Admin| `{ count?, message? }`        |
+| `updateCollege` | PUT    | `/admin/college/{collegeId}`  | Super Admin| `{ message? }`                |
 
 `addColleges` sends a **bare JSON array** as the body — do not wrap it in an
 object. Duplicate `collegeId` values are skipped server-side; `count` = inserted.
+
+`updateCollege` sends `{ collegeId?, name?, state?, district? }`. When changing
+a college's district, the frontend auto-generates a new `collegeId`
+(district prefix 3 letters + 3-digit sequential number) and sends it in the
+payload.
 
 ### `services/admin.ts` — admin portal
 | Function            | Method | Path                                   | Auth   | Returns                                  |
@@ -180,6 +209,7 @@ object. Duplicate `collegeId` values are skipped server-side; `count` = inserted
 | `deleteTeam`        | DELETE | `/admin/deleteteam/{leader_id}`        | admin  | `{ deletedCount?, message? }`            |
 | `deleteTeamByEvent` | DELETE | `/admin/deleteteambyevent/{leader_id}/{event}` | admin | `{ updatedCount?, deletedCount?, message? }` |
 | `getDashboardStats` | GET    | `/admin/dashboardstats`                | admin  | `{ stats? }`                             |
+| `getLeaderCollegeDepts` | GET | `/admin/leader-college-depts`          | admin  | `{ data: CollegeDepartments[] }`         |
 
 Event names with spaces must be URL-encoded for `deleteteambyevent`
 (e.g. `Bid%20Mayhem`) — handled with `encodeURIComponent`.
@@ -193,6 +223,12 @@ Event names with spaces must be URL-encoded for `deleteteambyevent`
   `redirectToLogin(router)` (clears all four keys and pushes `/login`).
 - Guards run in client components/layouts. Missing tokens redirect to the
   appropriate login page. `adminreg` additionally rejects non-Super Admins.
+- Admin pages use a **route group** `app/admin/(dashboard)/` so that
+  `/admin/login` and `/admin/changepassword` bypass the `AdminLayout` guard.
+- `AdminLayout` uses `useState`/`useEffect` for auth (not render-time
+  `getAdminToken()`) to avoid SSR/client hydration mismatches.
+- `lib/auth.ts` exposes `isSuperAdmin()` for conditional UI (e.g. Edit buttons
+  on the Manage Colleges panel).
 
 ## Validation Engine (`lib/candidate.ts`)
 
@@ -210,14 +246,19 @@ the single source of truth for the frontend.
 
 ## Forms & UI Conventions
 
-- All forms use **react-hook-form** + **zod** schemas resolved with
+- All **public forms** use **react-hook-form** + **zod** schemas resolved with
   `@hookform/resolvers/zod`.
 - Field wiring uses the Base UI based `Field`/`FieldLabel`/`FieldError`/
   `FieldContent` components from `components/ui/field.tsx` with RHF's
   `Controller` — there is **no legacy `Form` wrapper**.
-- shadcn buttons use the `render` prop, **not** `asChild`.
-- Feedback goes through **sonner** toasts (`components/ui/sonner.tsx`),
-  not SweetAlert2.
+- **Admin panels** use native `<button>` elements (not shadcn `Button` which
+  uses `@base-ui/react/button`). The shadcn `Button` component is excluded
+  from admin panel imports.
+- Feedback uses **two systems**: `aionAlert` (SweetAlert2) for confirmation
+  dialogs and loading states, **sonner** toasts for simple success/error
+  messages. Both are used across admin and public UI.
+- **Admin data panels** use `@tanstack/react-query` hooks for server state
+  (caching, refetching, mutations).
 - Import via the `@/*` path alias; TypeScript strict; **no code comments**
   unless asked.
 

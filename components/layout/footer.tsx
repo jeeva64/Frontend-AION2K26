@@ -30,7 +30,10 @@ export function Footer() {
                     •
                   </span>
                 )}
-                <Link href={link.href} className="transition hover:text-blue-400">
+                <Link
+                  href={link.href}
+                  className="transition hover:text-blue-400"
+                >
                   {link.label}
                 </Link>
               </span>
@@ -40,21 +43,12 @@ export function Footer() {
           <div className="text-center text-sm text-slate-400">
             <p className="font-medium text-slate-300">Developed By</p>
             <p>
-              Jeeva Loganathan (I M.Sc AI) ·{" "}
+              Jeeva Loganathan (II M.Sc AI) ·{" "}
               <a
                 href="tel:+919976578892"
                 className="transition hover:text-blue-400"
               >
                 +91 99765 78892
-              </a>
-            </p>
-            <p>
-              William James (I M.Sc AI) ·{" "}
-              <a
-                href="tel:+918056560315"
-                className="transition hover:text-blue-400"
-              >
-                +91 80565 60315
               </a>
             </p>
           </div>
