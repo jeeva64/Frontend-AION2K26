@@ -8,11 +8,25 @@ import { DashboardNav } from "@/components/dashboard/dashboard-nav";
 import { StatsBanner } from "@/components/dashboard/stats-banner";
 import { RegisteredMembersTable } from "@/components/dashboard/registered-members-table";
 import { TeamRegistrationForm } from "@/components/dashboard/team-registration-form";
+import { PaymentStatusCard } from "@/components/dashboard/payment-status-card";
 import { ApiError } from "@/lib/api-client";
 import { getLeaderId, getLeaderToken, redirectToLogin } from "@/lib/auth";
-import { MAX_STUDENTS_PER_LEADER, type EventName } from "@/lib/constants";
+import {
+  EVENT_CONFIG,
+  MAX_STUDENTS_PER_LEADER,
+  SLOT_1_EVENTS,
+  SLOT_2_EVENTS,
+  type EventName,
+} from "@/lib/constants";
 import type { RegisteredStudent } from "@/lib/types";
+import type { MyPaymentResponse } from "@/lib/types";
 import { getCandidates, getLeaderStats } from "@/services/team";
+import { getMyPayment } from "@/services/payment";
+
+const SLOT_1_TIME =
+  EVENT_CONFIG[SLOT_1_EVENTS.find((e) => EVENT_CONFIG[e].slot === "1")!].time;
+const SLOT_2_TIME =
+  EVENT_CONFIG[SLOT_2_EVENTS.find((e) => EVENT_CONFIG[e].slot === "2")!].time;
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -25,6 +39,8 @@ export default function DashboardPage() {
   const [totalStudents, setTotalStudents] = useState(0);
   const [studentsRemaining, setStudentsRemaining] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [paymentInfo, setPaymentInfo] = useState<MyPaymentResponse | null>(null);
+  const [paymentLoading, setPaymentLoading] = useState(true);
 
   useEffect(() => {
     const t = getLeaderToken();
@@ -72,6 +88,31 @@ export default function DashboardPage() {
     }
   }, [authed, token, leaderId, loadData]);
 
+  const loadPayment = useCallback(async () => {
+    if (!token) return;
+    setPaymentLoading(true);
+    try {
+      setPaymentInfo(await getMyPayment(token));
+    } catch (error) {
+      if (!(error instanceof ApiError && error.status === 401)) {
+        setPaymentInfo(null);
+      }
+    } finally {
+      setPaymentLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (authed && token && leaderId) {
+      void loadPayment();
+    }
+  }, [authed, token, leaderId, loadPayment]);
+
+  const refreshAll = useCallback(() => {
+    void loadData();
+    void loadPayment();
+  }, [loadData, loadPayment]);
+
   const studentMap = useMemo(() => {
     const map: Record<string, RegisteredStudent> = {};
     for (const doc of candidates) {
@@ -110,7 +151,7 @@ export default function DashboardPage() {
               <div className="rounded-xl border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50 p-4">
                 <div className="mb-3 flex items-center justify-between">
                   <h4 className="text-lg font-bold">Slot 1</h4>
-                  <span className="slot-badge slot-1">10:30 AM - 12:30 PM</span>
+                  <span className="slot-badge slot-1">{SLOT_1_TIME}</span>
                 </div>
                 <ul className="space-y-2 text-sm text-slate-700">
                   <li className="flex items-center gap-2">
@@ -135,7 +176,7 @@ export default function DashboardPage() {
               <div className="rounded-xl border-2 border-pink-200 bg-gradient-to-br from-pink-50 to-purple-50 p-4">
                 <div className="mb-3 flex items-center justify-between">
                   <h4 className="text-lg font-bold">Slot 2</h4>
-                  <span className="slot-badge slot-2">1:30 PM - 3:30 PM</span>
+                  <span className="slot-badge slot-2">{SLOT_2_TIME}</span>
                 </div>
                 <ul className="space-y-2 text-sm text-slate-700">
                   <li className="flex items-center gap-2">
@@ -175,13 +216,21 @@ export default function DashboardPage() {
             studentsRemaining={studentsRemaining ?? MAX_STUDENTS_PER_LEADER - totalStudents}
           />
 
+          <PaymentStatusCard
+            payment={paymentInfo?.data ?? null}
+            amountDuePaises={paymentInfo?.amountDuePaises ?? 0}
+            uniqueStudents={paymentInfo?.uniqueStudents ?? 0}
+            loading={paymentLoading}
+            onRefresh={() => void loadPayment()}
+          />
+
           <TeamRegistrationForm
             leaderId={leaderId ?? ""}
             token={token ?? ""}
             studentMap={studentMap}
             registeredEvents={registeredEvents}
             totalStudents={totalStudents}
-            onRegistered={() => void loadData()}
+            onRegistered={() => refreshAll()}
             onUnauthorized={handleUnauthorized}
           />
 

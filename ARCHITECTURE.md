@@ -39,36 +39,49 @@ app/                      Next.js App Router
                           ToasterWrapper (Sonner SSR-safe via dynamic import)
   globals.css             Tailwind v4; @theme inline + :root/.dark tokens;
                           AION color palette CSS custom properties
+  not-found.tsx           Branded 404 page
   (public)/               Shared public layout (Navbar + Footer + SkipLink)
-    page.tsx              Landing (hero + 8 event cards)
+    page.tsx              Landing (hero, schedule-at-a-glance strip,
+                          8 event cards with scroll-reveal)
     about/                Department/faculty/committee (Orbitron/Rajdhani)
     brochure/             Invitation + rules/schedule downloads
-    register/             Leader signup
-    login/                Leader login
+    register/             Leader signup (split-panel AuthShell)
+    login/                Leader login (split-panel AuthShell)
   dashboard/              Leader area (guard: leader_token + leader_id)
     layout.tsx            title "Dashboard"
-    page.tsx              Stats banner, registered teams, registration form
+    page.tsx              Stats banner, registered teams, registration form,
+                          UPI payment status card + proof dialog
   admin/                  Admin area
-    layout.tsx            AdminNav + light gradient background (server component)
+    providers.tsx         AdminProviders: react-query QueryClient +
+                          cache-level 401 redirect to /admin/login
     login/                Admin login (bypasses admin guard)
+    changepassword/       Change own password (outside protected group)
     (dashboard)/          Protected admin route group (auth layout wrapper)
-      layout.tsx          AdminProviders (react-query) + AdminLayout (client guard)
-      page.tsx            Dashboard (stats cards via DashboardPanel)
+      layout.tsx          AdminProviders + AdminLayout (client guard)
+      page.tsx            Dashboard
       adminreg/           Super Admin-only moderator creation
 
 components/
   ui/                     shadcn/ui (Base UI based): button, card, dialog,
                           alert-dialog, input, label, select, table, tabs,
                           badge, alert, separator, skeleton, sonner, field;
-                          ToasterClient.tsx (Sonner with ssr:false)
+                          ToasterClient.tsx (Sonner with ssr:false);
+                          select-classes.ts (shared native <select> styles)
   layout/                 navbar.tsx, footer.tsx, skip-link.tsx
-  auth/                   auth-shell.tsx (shared auth page shell)
+  public/                 reveal.tsx (IntersectionObserver scroll-reveal,
+                          respects prefers-reduced-motion)
+  auth/                   auth-shell.tsx (split-panel brand shell:
+                            dark panel lg+ / banner mobile),
+                          password-input.tsx (show/hide Eye toggle)
   dashboard/              stats-banner.tsx, team-registration-form.tsx,
                           registered-members-table.tsx, food-badge.tsx,
-                          dashboard-nav.tsx
-  admin/                  AdminLayout.tsx (client auth guard + tab container),
-                          AdminTabs.tsx (tab switcher importing real panels),
+                          dashboard-nav.tsx, payment-dialog.tsx
+                          (multipart proof upload)
+  admin/                  AdminLayout.tsx (client auth guard + role-aware tabs),
+                          AdminTabs.tsx (role-filtered tab switcher),
                           DashboardPanel.tsx (stats cards + login timeline),
+                          PaymentsPanel.tsx (payment verification:
+                            list/detail/proof/verify/reject/reopen),
                           ViewTeamPanel.tsx (dynamic college/dept dropdowns,
                             grouped-by-leader table, delete, Excel export),
                           ViewEventPanel.tsx (event select, team cards,
@@ -86,15 +99,16 @@ lib/
   constants/admin.ts      EVENT_SLOT_MAP, DEPARTMENTS (object[]), TN_DISTRICTS
   api-client.ts           api() / apiPost(), ApiError / NetworkError
   auth.ts                 localStorage token helpers, redirectToLogin,
-                          isSuperAdmin(), requireSuperAdmin()
+                          redirectToAdminLogin, isSuperAdmin(),
+                          requireSuperAdmin()
   candidate.ts            client-side rules engine
-  types.ts                shared TypeScript types
+  types.ts                shared TypeScript types (incl. payments)
   alerts.ts               aionAlert (SweetAlert2 wrapper for confirmations)
   export.ts               Excel export helpers (xlsx)
-  utils.ts                cn()
+  utils.ts                cn(), formatRupees()
 
 services/
-  auth.ts, team.ts, college.ts, admin.ts
+  auth.ts, team.ts, college.ts, admin.ts, payment.ts
 ```
 
 ## Request Flow
@@ -159,6 +173,12 @@ that are naturally lists or bundled objects.
 | `DELETE /admin/deleteteam/{leader_id}`| `deletedCount`                             | `deleteTeam`              |
 | `DELETE /admin/deleteteambyevent/...`| `updatedCount`, `deletedCount`             | `deleteTeamByEvent`       |
 | `GET /admin/dashboardstats`          | `stats`                                    | `getDashboardStats`       |
+| `GET /payments/mine`                 | `uniqueStudents`, `amountDuePaises`, `upiUri`, `data` | `getMyPayment`  |
+| `POST /payments/proof` (multipart)   | `paymentId`, `paymentStatus`               | `submitPaymentProof`      |
+| `GET /admin/payments[?status]`       | `count`, `data`                            | `listPayments`            |
+| `GET /admin/payments/{id}`           | `data`, `audit`                            | `getPaymentDetail`        |
+| `GET /admin/payments/{id}/proof`     | `url`, `expiresIn`                         | `getPaymentProof`         |
+| `POST /admin/payments/{id}/{action}` | `paymentStatus` (verify/reject/reopen)     | `verify/reject/reopenPayment` |
 
 **Caveat that has caused bugs:** keys such as `count`, `stats`, `deletedCount`,
 `updatedCount`, `role`, and `token` are **not** inside `data`. When the
@@ -214,6 +234,24 @@ payload.
 Event names with spaces must be URL-encoded for `deleteteambyevent`
 (e.g. `Bid%20Mayhem`) — handled with `encodeURIComponent`.
 
+### `services/payment.ts` — registration payments
+
+Money is **integer paise** everywhere; format with `formatRupees()`.
+
+| Function              | Method | Path                                  | Auth          | Returns / Notes                                   |
+| --------------------- | ------ | ------------------------------------- | ------------- | ------------------------------------------------- |
+| `getMyPayment`        | GET    | `/payments/mine`                      | leader        | uniqueStudents, amountDuePaises, upiUri, status   |
+| `submitPaymentProof`  | POST   | `/payments/proof`                     | leader        | multipart FormData (`utr`, `amountPaises`, `screenshot`); never set Content-Type manually — uses api-client `rawBody` |
+| `listPayments`        | GET    | `/admin/payments[?status=]`           | admin         | `{ count, data: PaymentSummaryRow[] }`            |
+| `getPaymentDetail`    | GET    | `/admin/payments/{id}`                | Super Admin*  | `{ data: PaymentDetail, audit }`                  |
+| `getPaymentProof`     | GET    | `/admin/payments/{id}/proof`          | Super Admin*  | presigned URL; fetched as Bearer blob for display |
+| `verifyPayment`       | POST   | `/admin/payments/{id}/verify`         | Super Admin*  | confirms the leader's registrations               |
+| `rejectPayment`       | POST   | `/admin/payments/{id}/reject`         | Super Admin*  | requires a reason (captured via `aionAlert.input`)|
+| `reopenPayment`       | POST   | `/admin/payments/{id}/reopen`         | Super Admin*  | back to Verification Pending                      |
+
+\* Role enforcement is backend-side (`adminRole: 1` → moderators get 403);
+the frontend additionally hides the tab via `superAdminOnly` in `AdminTabs`.
+
 ## Authentication & Route Guards
 
 - Storage keys (localStorage): `leader_token`, `leader_id`, `admin_token`,
@@ -222,11 +260,22 @@ Event names with spaces must be URL-encoded for `deleteteambyevent`
   `clearAllAuth()`, `isLeaderLoggedIn()`, `isAdminLoggedIn()`, and
   `redirectToLogin(router)` (clears all four keys and pushes `/login`).
 - Guards run in client components/layouts. Missing tokens redirect to the
-  appropriate login page. `adminreg` additionally rejects non-Super Admins.
+  appropriate login page.
+- `lib/auth.ts` exposes `redirectToAdminLogin(router)` (clears all four keys
+  and pushes `/admin/login`).
+- `AdminLayout` accepts **any admin token** (role `1` or `2`). Missing token →
+  clear + redirect to `/admin/login`. Role drives the UI: Super Admins see all
+  five tabs in `AdminTabs` (Dashboard, Payment Verification, View Team,
+  View Event Registrations, Manage Colleges); **Moderators see only View
+  Event Registrations** (per-event moderator filtering planned later).
 - Admin pages use a **route group** `app/admin/(dashboard)/` so that
   `/admin/login` and `/admin/changepassword` bypass the `AdminLayout` guard.
 - `AdminLayout` uses `useState`/`useEffect` for auth (not render-time
   `getAdminToken()`) to avoid SSR/client hydration mismatches.
+- `adminreg` additionally rejects non-Super Admins at the page level.
+- Mid-session expiry: `app/admin/providers.tsx` wires a react-query
+  `QueryCache`/`MutationCache` `onError` handler — any `ApiError` with status
+  `401` clears all auth and redirects to `/admin/login`.
 - `lib/auth.ts` exposes `isSuperAdmin()` for conditional UI (e.g. Edit buttons
   on the Manage Colleges panel).
 
@@ -251,6 +300,10 @@ the single source of truth for the frontend.
 - Field wiring uses the Base UI based `Field`/`FieldLabel`/`FieldError`/
   `FieldContent` components from `components/ui/field.tsx` with RHF's
   `Controller` — there is **no legacy `Form` wrapper**.
+- Native `<select>` controls share the class constants from
+  `components/ui/select-classes.ts` (`selectClass`, `selectClassCompact`).
+- Password fields use `components/auth/password-input.tsx` (show/hide toggle);
+  mandatory fields show a red asterisk and set `aria-required="true"`.
 - **Admin panels** use native `<button>` elements (not shadcn `Button` which
   uses `@base-ui/react/button`). The shadcn `Button` component is excluded
   from admin panel imports.
@@ -272,3 +325,7 @@ the single source of truth for the frontend.
   dark hero `#0F172A`.
 - Animations: `float`, `particle-float`, `pulse-ring`, `glow`, `fadeInUp`,
   `deadlinePulse`.
+- Scroll-reveal: `.reveal` / `.reveal.is-revealed` utilities driven by
+  `components/public/reveal.tsx` (IntersectionObserver, reveals once).
+- A global `prefers-reduced-motion` guard in globals.css disables decorative
+  animations and reveals for users who opt out.

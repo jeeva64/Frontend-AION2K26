@@ -1,5 +1,6 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,6 +10,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { AuthShell } from "@/components/auth/auth-shell";
+import { PasswordInput } from "@/components/auth/password-input";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -67,11 +69,10 @@ export default function LoginPage() {
 
   return (
     <AuthShell>
-      <h2 className="mb-4 text-2xl font-bold">Student Leader Login</h2>
-      <p className="mb-4 text-gray-500">
+      <h2 className="text-2xl font-bold tracking-tight">Student Leader Login</h2>
+      <p className="mb-8 mt-1 text-sm text-gray-500">
         Login to manage your team and registrations
       </p>
-      <hr className="mb-6" />
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -79,12 +80,16 @@ export default function LoginPage() {
         className="space-y-5 text-left"
       >
         <Field>
-          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <FieldLabel htmlFor="email">
+            Email
+            <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
+          </FieldLabel>
           <Input
             id="email"
             type="email"
             placeholder="Enter your email"
             autoComplete="email"
+            aria-required="true"
             aria-invalid={!!errors.email}
             {...register("email")}
           />
@@ -92,12 +97,15 @@ export default function LoginPage() {
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="password">Password</FieldLabel>
-          <Input
+          <FieldLabel htmlFor="password">
+            Password
+            <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
+          </FieldLabel>
+          <PasswordInput
             id="password"
-            type="password"
             placeholder="Enter your password"
             autoComplete="current-password"
+            aria-required="true"
             aria-invalid={!!errors.password}
             {...register("password")}
           />
@@ -109,9 +117,16 @@ export default function LoginPage() {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full py-3 text-base"
+          className="mt-2 w-full rounded-full bg-gradient-to-r from-blue-600 to-purple-600 py-3 text-base text-white shadow-[0_8px_20px_rgba(59,130,246,0.35)] transition-all hover:-translate-y-0.5 hover:opacity-95 disabled:pointer-events-none disabled:opacity-60 disabled:shadow-none"
         >
-          {isSubmitting ? "Please wait..." : "Login"}
+          {isSubmitting ? (
+            <span className="inline-flex items-center justify-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Please wait…
+            </span>
+          ) : (
+            "Login"
+          )}
         </Button>
 
         <p className="mt-2 text-center text-sm text-gray-500">

@@ -11,6 +11,7 @@ import { DEPARTMENTS } from '@/lib/constants/admin';
 import type { Department } from '@/lib/constants';
 import { toast } from 'sonner';
 import { Field, FieldLabel } from '@/components/ui/field';
+import { selectClass } from '@/components/ui/select-classes';
 import {
   Table,
   TableHeader,
@@ -112,9 +113,6 @@ export function ViewTeamPanel() {
 
   const groups = data ? groupByLeader(data) : [];
 
-  const selectClass =
-    'h-8 w-full rounded-lg border border-input bg-white px-2.5 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50';
-
   return (
     <div className="space-y-6">
       <div>
@@ -195,8 +193,8 @@ export function ViewTeamPanel() {
               <p className="text-aion-muted text-lg">No team found for the specified criteria</p>
             </div>
           ) : (
-            <div className="bg-aion-card rounded-xl border border-aion overflow-hidden">
-              <Table>
+            <div className="bg-aion-card rounded-xl border border-aion overflow-x-auto">
+              <Table className="min-w-[900px]">
                 <TableHeader>
                   <TableRow className="border-aion">
                     <TableHead>S.No</TableHead>

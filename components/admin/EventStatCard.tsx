@@ -1,5 +1,3 @@
-'use client';
-
 import { EVENT_COLORS, EVENT_SLOT_MAP, type EventName, type EventSlot, SLOT_COLORS } from '@/lib/constants/admin';
 
 interface EventStatCardProps {

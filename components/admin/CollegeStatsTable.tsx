@@ -1,5 +1,3 @@
-'use client';
-
 import { CollegeStat } from '@/lib/types';
 import { exportCollegeStats } from '@/lib/export';
 import { aionAlert } from '@/lib/alerts';

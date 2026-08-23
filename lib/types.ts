@@ -155,3 +155,64 @@ export interface DashboardStats {
   collegeStats: CollegeStat[];
   deptCounts: Record<string, number>;
 }
+
+export type PaymentStatus =
+  | "PENDING"
+  | "VERIFICATION_PENDING"
+  | "SUCCESS"
+  | "REJECTED";
+
+export type RegistrationStatus =
+  | "PAYMENT_PENDING"
+  | "VERIFICATION_PENDING"
+  | "CONFIRMED"
+  | "REJECTED";
+
+export interface PaymentInfo {
+  paymentId?: number;
+  leaderId?: string;
+  expectedAmountPaises?: number;
+  submittedAmountPaises?: number | null;
+  currency?: string;
+  utr?: string | null;
+  paymentStatus?: PaymentStatus;
+  submittedAt?: string | null;
+  verifiedAt?: string | null;
+  rejectionReason?: string | null;
+}
+
+export interface MyPaymentResponse {
+  success: boolean;
+  message?: string;
+  uniqueStudents: number;
+  amountDuePaises: number;
+  upiUri: string | null;
+  data: PaymentInfo | null;
+}
+
+export interface PaymentSummaryRow extends PaymentInfo {
+  _id: number;
+  proofObjectKey?: string | null;
+  verifiedBy?: string | null;
+  leaderName?: string | null;
+  leaderCollege?: string | null;
+  leaderDepartment?: string | null;
+  verifierName?: string | null;
+}
+
+export interface PaymentAuditEntry {
+  auditId: number;
+  paymentId: number;
+  adminId: string | null;
+  action: string;
+  oldStatus: string | null;
+  newStatus: string | null;
+  reason: string | null;
+  createdAt: string;
+}
+
+export interface PaymentDetail extends PaymentSummaryRow {
+  proofOriginalFilename?: string | null;
+  proofMimeType?: string | null;
+  proofFileSize?: number | null;
+}

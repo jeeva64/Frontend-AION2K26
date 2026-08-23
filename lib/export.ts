@@ -130,7 +130,7 @@ export function exportEventParticipants(
 ) {
   if (!data.length) return;
 
-  const excelData: any[] = [];
+  const excelData: Array<Record<string, string | number>> = [];
   let sno = 1;
 
   data.forEach(team => {

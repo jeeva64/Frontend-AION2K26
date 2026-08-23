@@ -8,6 +8,7 @@ import { EVENT_NAMES } from '@/lib/constants';
 import { EVENT_SLOT_MAP } from '@/lib/constants/admin';
 import { toast } from 'sonner';
 import { Field, FieldLabel } from '@/components/ui/field';
+import { selectClass } from '@/components/ui/select-classes';
 import {
   Table,
   TableHeader,
@@ -61,9 +62,6 @@ export function ViewEventPanel() {
   };
 
   const totalParticipants = data?.reduce((sum, team) => sum + (team.members?.length || 0), 0) || 0;
-
-  const selectClass =
-    'h-8 w-full rounded-lg border border-input bg-white px-2.5 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50';
 
   return (
     <div className="space-y-6">

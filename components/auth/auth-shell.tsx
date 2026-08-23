@@ -1,3 +1,5 @@
+import { CalendarDays, MapPin } from "lucide-react";
+import Image from "next/image";
 import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
@@ -57,12 +59,96 @@ export function AuthHeroBackground() {
   );
 }
 
+const HIGHLIGHTS = ["8 Events", "₹200 Entry", "1 Day"];
+
+function BrandPanel() {
+  return (
+    <div className="relative hidden flex-col justify-between gap-8 overflow-hidden bg-[linear-gradient(160deg,#0f172a_0%,#1e293b_45%,#1e3a8a_100%)] p-8 text-white lg:col-span-2 lg:flex">
+      <div
+        aria-hidden="true"
+        className="animate-float pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-blue-500 opacity-20 blur-[70px]"
+      />
+      <div
+        aria-hidden="true"
+        className="animate-float-delay pointer-events-none absolute -bottom-20 -left-12 h-56 w-56 rounded-full bg-purple-500 opacity-20 blur-[70px]"
+      />
+
+      <Image
+        src="/logo.png"
+        alt="AION 2K26"
+        width={200}
+        height={85}
+        priority
+        className="relative w-32"
+        style={{ height: "auto" }}
+      />
+
+      <div className="relative space-y-4">
+        <h2 className="text-xl font-bold leading-snug">
+          National Level Technical Symposium
+        </h2>
+        <p className="text-sm leading-relaxed text-slate-300">
+          Department of Artificial Intelligence
+          <br />
+          St. Joseph&apos;s College (Autonomous), Tiruchirappalli
+        </p>
+        <div className="space-y-2 pt-1 text-sm text-slate-300">
+          <p className="flex items-center gap-2">
+            <CalendarDays className="h-4 w-4 shrink-0 text-blue-400" />
+            February 13, 2026 · Friday
+          </p>
+          <p className="flex items-center gap-2">
+            <MapPin className="h-4 w-4 shrink-0 text-blue-400" />
+            Sail Hall, Arrupe Library
+          </p>
+        </div>
+      </div>
+
+      <div className="relative flex flex-wrap gap-2">
+        {HIGHLIGHTS.map((label) => (
+          <span
+            key={label}
+            className="rounded-full border border-white/15 bg-white/[0.07] px-3 py-1 text-xs font-semibold backdrop-blur-sm"
+          >
+            {label}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function BrandBanner() {
+  return (
+    <div className="flex items-center gap-3 border-b border-slate-100 px-6 py-4 lg:hidden">
+      <Image
+        src="/logo.png"
+        alt="AION 2K26"
+        width={120}
+        height={51}
+        priority
+        className="h-9 shrink-0"
+        style={{ width: "auto" }}
+      />
+      <p className="min-w-0 text-xs font-medium leading-snug text-slate-500">
+        National Level Technical Symposium
+        <br />
+        Feb 13, 2026 · St. Joseph&apos;s College
+      </p>
+    </div>
+  );
+}
+
 export function AuthShell({ children }: { children: ReactNode }) {
   return (
-    <section className="relative flex min-h-[calc(100vh-3rem)] items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_top,#1e293b_0%,#0f172a_100%)] px-4 py-12">
+    <section className="relative flex min-h-[calc(100svh-3.5rem)] items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_top,#1e293b_0%,#0f172a_100%)] px-4 py-10 sm:px-6 sm:py-14">
       <AuthHeroBackground />
-      <div className="relative z-10 w-full max-w-2xl rounded-2xl bg-white p-8 text-center shadow-xl sm:p-10">
-        {children}
+      <div className="relative z-10 grid w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-2xl lg:grid-cols-5">
+        <BrandPanel />
+        <div className="flex flex-col lg:col-span-3">
+          <BrandBanner />
+          <div className="p-6 text-left sm:p-10">{children}</div>
+        </div>
       </div>
     </section>
   );

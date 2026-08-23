@@ -16,7 +16,7 @@ export function Footer() {
             AION<span className="text-blue-400"> 2K26</span>
           </h3>
           <p className="text-sm text-slate-400">
-            State Level Technical Symposium
+            National Level Technical Symposium
           </p>
 
           <nav

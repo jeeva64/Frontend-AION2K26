@@ -1,5 +1,3 @@
-'use client';
-
 interface DegreeStatsProps {
   ugCount: number;
   pgCount: number;

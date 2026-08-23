@@ -13,13 +13,8 @@ Built as a modern rebuild of the original static HTML site:
 - **sonner** toasts, `aionAlert` (SweetAlert2) for confirmations
 - **xlsx** for Excel exports, `next/font` (Outfit)
 
-<<<<<<< HEAD
 Backend: FastAPI + SQLAlchemy 2.0 (async PostgreSQL) — see
 `E:\AION WINTER\Backend AION2K26`.
-=======
-Backend: FastAPI + Motor (async MongoDB) - see
-`E:\AION WINTER\BACKEND\Backend-AION2K26-Winter`.
->>>>>>> e2aaf0297ff415e71b6846cdcd974aaa80f509f4
 
 ## Table of Contents
 
@@ -41,7 +36,8 @@ Backend: FastAPI + Motor (async MongoDB) - see
 **Prerequisites**
 
 - Node.js **>= 18.18** and npm
-- MongoDB running locally (default `mongodb://localhost:27017`)
+- PostgreSQL running locally (e.g. `postgresql://localhost:5432/aion2026` —
+  see the backend `.env.example`)
 - Backend running on `http://localhost:5000`
 
 **Install**
@@ -100,14 +96,15 @@ Run `npm run build` before finishing any change to catch type/lint errors.
 
 | Route                | Access                 | Description                                  |
 | -------------------- | ---------------------- | -------------------------------------------- |
-| `/`                  | Public                 | Landing page (hero + event cards)            |
+| `/`                  | Public                 | Landing page (hero, schedule, event cards)   |
 | `/about`             | Public                 | Department, faculty, organizing committee    |
 | `/brochure`          | Public                 | Invitation preview, rules/schedule download  |
 | `/register`          | Public                 | Leader signup (`POST /regleader`)            |
 | `/login`             | Public                 | Leader login (`POST /loginleader`)           |
-| `/dashboard`         | Leader                 | Stats, registered teams, team registration   |
+| `/dashboard`         | Leader                 | Stats, registered teams, registration, payments |
 | `/admin/login`       | Public                 | Admin login (`POST /admin/adminlogin`)       |
-| `/admin`             | Admin                  | Dashboard (stats)                            |
+| `/admin/changepassword` | Admin               | Change own password (`POST /admin/changepassword`) |
+| `/admin`             | Admin                  | Stats, payment verification, views, colleges |
 | `/admin/adminreg`    | Super Admin only       | Create moderators (`POST /admin/adminreg`)   |
 
 Route guards: no `leader_token`/`leader_id` → redirect `/login`; no
@@ -119,43 +116,52 @@ Route guards: no `leader_token`/`leader_id` → redirect `/login`; no
 app/
   layout.tsx            Root layout: fonts, global metadata, Toaster
   globals.css           Tailwind v4 @theme, AION palette, animations
+  not-found.tsx         Branded 404 page
   (public)/             Public pages: page (landing), about, brochure,
                         register, login, layout
   dashboard/            Leader dashboard (layout + page)
   admin/                Admin portal
-    layout.tsx          AdminNav + light gradient background (server)
+    providers.tsx       AdminProviders (react-query + cache-level 401 redirect)
     login/              Admin login
+    changepassword/     Change own password
     (dashboard)/        Protected admin area (auth layout wrapper)
       layout.tsx        AdminProviders + AdminLayout (client guard)
-      page.tsx          Dashboard (stats)
+      page.tsx          Dashboard
       adminreg/         Super Admin-only moderator creation
 components/
-  ui/                   shadcn/ui components (Base UI based)
-                        ToasterClient.tsx (Sonner SSR-safe wrapper)
+  ui/                   shadcn/ui components (Base UI based),
+                        ToasterClient.tsx (Sonner SSR-safe wrapper),
+                        select-classes.ts (shared native select styles)
   layout/               navbar, footer, skip-link
-  auth/                 auth-shell
+  auth/                 auth-shell (split-panel brand shell),
+                        password-input (show/hide Eye toggle)
+  public/               reveal.tsx (IntersectionObserver scroll-reveal)
   dashboard/            stats-banner, team-registration-form,
-                        registered-members-table, food-badge, dashboard-nav
+                        registered-members-table, food-badge, dashboard-nav,
+                        payment-dialog (proof upload)
   admin/                AdminLayout.tsx (client auth guard + tabs),
-                        AdminTabs.tsx (tab switcher),
+                        AdminTabs.tsx (role-filtered tab switcher),
                         DashboardPanel.tsx (stats cards),
+                        PaymentsPanel.tsx (payment verification),
                         ViewTeamPanel.tsx (college/dept search, grouped table),
                         ViewEventPanel.tsx (event search, team cards),
                         ManageCollegesPanel.tsx (add/edit colleges, auto-ID)
 lib/
   constants.ts          API base, events, limits, enums, labels
   constants/admin.ts    EVENT_SLOT_MAP, DEPARTMENTS (objects), TN_DISTRICTS
-  api-client.ts         fetch wrapper (envelope handling, typed errors)
+  api-client.ts         fetch wrapper (envelope handling, typed errors, rawBody)
   auth.ts               localStorage token helpers + redirects
   candidate.ts          client-side conflict/validation rules
-  types.ts              shared TypeScript types
+  types.ts              shared TypeScript types (incl. payments)
   alerts.ts             aionAlert (SweetAlert2 wrapper)
   export.ts             Excel export helpers (xlsx)
-  utils.ts              cn() helper
+  utils.ts              cn(), formatRupees()
 services/
   auth.ts               leader register/login
   team.ts               register team, candidates, leader stats
   college.ts            list colleges, bulk-add colleges, update college
+  payment.ts            leader payment status + proof upload;
+                        admin verification (list/detail/proof/actions)
   admin.ts              admin login/register, view team, event regs,
                         delete team(s), dashboard stats, leader college depts
 hooks/
@@ -196,6 +202,12 @@ Extra fields live **at the envelope top level**, not inside a `data` object:
 | `DELETE /admin/deleteteam/{leader_id}`| `deletedCount`                            |
 | `DELETE /admin/deleteteambyevent/...`| `updatedCount`, `deletedCount`             |
 | `GET /admin/dashboardstats`          | `stats`                                    |
+| `GET /payments/mine`                 | `uniqueStudents`, `amountDuePaises`, `upiUri`, `data` |
+| `POST /payments/proof` (multipart)   | `paymentId`, `paymentStatus`               |
+| `GET /admin/payments[?status]`       | `count`, `data`                            |
+| `GET /admin/payments/{id}`           | `data`, `audit`                            |
+| `GET /admin/payments/{id}/proof`     | `url` (presigned)                          |
+| `POST /admin/payments/{id}/{action}` | `paymentStatus` — action = verify/reject/reopen |
 
 HTTP status handling: **400** show message (keep form open), **401** clear
 tokens + redirect to `/login`, **403** show message, **404** empty state,
@@ -214,7 +226,10 @@ Tokens are stored in `localStorage` and sent as
 | `admin_role`    | Admin role (`1` Super, `2` Moderator) |
 
 On **401** the app clears all four keys and redirects to `/login`
-(`redirectToLogin` in `lib/auth.ts`).
+(`redirectToLogin` in `lib/auth.ts`). The admin side centralizes mid-session
+expiry too: a react-query cache-level handler in `app/admin/providers.tsx`
+catches any 401 from admin queries/mutations, clears all auth, and redirects
+to `/admin/login` (`redirectToAdminLogin`).
 
 ## Event Configuration
 
@@ -259,7 +274,9 @@ Normalized to kebab-case in `public/`: `logo.png`, `favicon.png`,
 ## Related Repositories
 
 - **Backend:** `E:\AION WINTER\Backend AION2K26`
-- **Reference static site (keep untouched):** `E:\AION WINTER\FRONTEND\`
+
+(The original static reference site at `E:\AION WINTER\FRONTEND\` has been
+removed; this Next.js rebuild is the source of truth.)
 
 See also [`ARCHITECTURE.md`](./ARCHITECTURE.md) for the frontend API contract
 and internals, and [`SEO.md`](./SEO.md) for search-engine optimization notes.

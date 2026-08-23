@@ -542,6 +542,36 @@
   letter-spacing: 0.025em;
 }
 
+/* Scroll-reveal (driven by components/public/reveal.tsx) */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-float-delay,
+  .animate-particle-float,
+  .animate-pulse-ring,
+  .animate-glow,
+  .animate-deadline-pulse,
+  .animate-fade-in-up,
+  .reveal {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 .slot-1 {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;

@@ -73,6 +73,13 @@ export function redirectToLogin(router: { push: (href: string) => void }) {
   router.push("/login");
 }
 
+export function redirectToAdminLogin(router: {
+  push: (href: string) => void;
+}) {
+  clearAllAuth();
+  router.push("/admin/login");
+}
+
 /** Check if current user is Super Admin (role === "1") */
 export function isSuperAdmin(): boolean {
   return getAdminRole() === "1";

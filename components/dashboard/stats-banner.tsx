@@ -1,5 +1,3 @@
-"use client";
-
 import { cn } from "@/lib/utils";
 import { MAX_STUDENTS_PER_LEADER } from "@/lib/constants";
 

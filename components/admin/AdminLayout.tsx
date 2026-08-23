@@ -3,17 +3,26 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AdminTabs } from './AdminTabs';
-import { getAdminToken, clearAllAuth, requireSuperAdmin } from '@/lib/auth';
+import {
+  clearAllAuth,
+  getAdminToken,
+  isSuperAdmin,
+} from '@/lib/auth';
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [hydrated, setHydrated] = useState(false);
+  const [superAdmin, setSuperAdmin] = useState(false);
 
   useEffect(() => {
-    if (!requireSuperAdmin(router)) {
+    const token = getAdminToken();
+    if (!token) {
+      clearAllAuth();
       router.push('/admin/login');
       return;
     }
+    const admin = isSuperAdmin();
+    setSuperAdmin(admin);
     setHydrated(true);
   }, [router]);
 
@@ -28,7 +37,9 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
       <header className="bg-aion-card border-b border-aion sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
           <div>
-            <h1 className="font-orbitron text-xl font-bold text-aion-primary">Super Admin Dashboard</h1>
+            <h1 className="font-orbitron text-xl font-bold text-aion-primary">
+              {superAdmin ? 'Super Admin Dashboard' : 'Moderator Panel'}
+            </h1>
             <p className="text-xs text-aion-muted">AION 2K26</p>
           </div>
           <button
@@ -44,7 +55,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <AdminTabs />
+        <AdminTabs isSuperAdmin={superAdmin} />
         <div className="mt-6">{children}</div>
       </main>
     </div>

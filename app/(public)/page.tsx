@@ -1,7 +1,31 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import { EVENT_CONFIG, type EventName } from "@/lib/constants";
+import { Reveal } from "@/components/public/reveal";
+import {
+  EVENT_CONFIG,
+  SLOT_1_EVENTS,
+  SLOT_2_EVENTS,
+  type EventName,
+  type EventSlot,
+} from "@/lib/constants";
+
+export const metadata: Metadata = {
+  title: "Home",
+  description:
+    "AION 2K26 — National Level Technical Symposium. 8 events, 1 day, ₹200 per participant. February 13, 2026 at St. Joseph's College.",
+};
+
+function slotLabelText(slot: EventSlot): string {
+  if (slot === "BOTH") return "Both Slots";
+  return slot === "1" ? "Slot 1" : "Slot 2";
+}
+
+const SLOT_1_TIME =
+  EVENT_CONFIG[SLOT_1_EVENTS.find((e) => EVENT_CONFIG[e].slot === "1")!].time;
+const SLOT_2_TIME =
+  EVENT_CONFIG[SLOT_2_EVENTS.find((e) => EVENT_CONFIG[e].slot === "2")!].time;
 
 /* ────────────────────────────────────────────────────────────────
    HERO
@@ -147,7 +171,7 @@ function CollegeHeader() {
         width={125}
         height={125}
         priority
-        className="h-[clamp(4.2rem,9vw,7.8rem)] w-[clamp(4.2rem,9vw,7.8rem)] shrink-0 animate-glow object-contain transition-transform hover:rotate-6 hover:scale-110"
+        className="hidden h-[clamp(4.2rem,9vw,7.8rem)] w-[clamp(4.2rem,9vw,7.8rem)] shrink-0 animate-glow object-contain transition-transform hover:rotate-6 hover:scale-110 sm:block"
       />
     </div>
   );
@@ -176,7 +200,8 @@ function Hero() {
               width={520}
               height={220}
               priority
-              className="h-auto w-[min(80vw,520px)]"
+              className="w-[min(80vw,520px)]"
+              style={{ height: "auto" }}
             />
           </div>
 
@@ -189,18 +214,18 @@ function Hero() {
             <span>Friday @ Sail Hall, Arrupe Library</span>
           </div>
 
-          <div className="grid animate-fade-in-up grid-cols-1 gap-3 sm:grid-cols-3 [animation-delay:0.55s]">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.05] px-6 py-4 text-center backdrop-blur-[10px]">
-              <div className="text-3xl font-extrabold text-blue-400">8</div>
-              <div className="mt-1 text-sm text-slate-300">Events</div>
+          <div className="grid animate-fade-in-up grid-cols-3 gap-2 [animation-delay:0.55s] sm:gap-3">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-center backdrop-blur-[10px] sm:px-6 sm:py-4">
+              <div className="text-xl font-extrabold text-blue-400 sm:text-3xl">8</div>
+              <div className="mt-1 text-xs text-slate-300 sm:text-sm">Events</div>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.05] px-6 py-4 text-center backdrop-blur-[10px]">
-              <div className="text-3xl font-extrabold text-emerald-400">₹200</div>
-              <div className="mt-1 text-sm text-slate-300">Entry Fee</div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-center backdrop-blur-[10px] sm:px-6 sm:py-4">
+              <div className="text-xl font-extrabold text-emerald-400 sm:text-3xl">₹200</div>
+              <div className="mt-1 text-xs text-slate-300 sm:text-sm">Entry Fee</div>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.05] px-6 py-4 text-center backdrop-blur-[10px]">
-              <div className="text-3xl font-extrabold text-amber-400">1 Day</div>
-              <div className="mt-1 text-sm text-slate-300">Power-Packed Experience</div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-center backdrop-blur-[10px] sm:px-6 sm:py-4">
+              <div className="text-xl font-extrabold text-amber-400 sm:text-3xl">1 Day</div>
+              <div className="mt-1 text-xs text-slate-300 sm:text-sm">Power-Packed Experience</div>
             </div>
           </div>
 
@@ -211,7 +236,7 @@ function Hero() {
             </svg>
             <span>
               <strong className="font-bold text-red-400">
-                Registration Closed on February 11, 2026
+                Registrations close on February 11, 2026 — limited slots!
               </strong>
             </span>
           </div>
@@ -305,15 +330,10 @@ const NON_TECH_EVENTS: EventInfo[] = [
 
 function EventCard({ event }: { event: EventInfo }) {
   const config = EVENT_CONFIG[event.name];
-  const slotLabel =
-    config.slot === "BOTH"
-      ? "Both Slots • 11:00 AM - 4:00 PM"
-      : config.slot === "1"
-        ? "Slot 1 • 11:00 AM - 1:00 PM"
-        : "Slot 2 • 2:00 PM - 4:00 PM";
+  const slotLabel = `${slotLabelText(config.slot)} • ${config.time}`;
 
   return (
-    <div className="relative overflow-hidden rounded-[clamp(1rem,2vw,1.5rem)] border-2 border-white/[0.08] bg-white/[0.05] px-[clamp(1.5rem,3vw,2rem)] py-[clamp(1.75rem,4vw,2.5rem)] text-center shadow-[0_8px_24px_rgba(0,0,0,0.15)] backdrop-blur-[10px] transition-all duration-[400ms] ease-[cubic-bezier(0.4,0,0.2,1)] before:pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(135deg,rgba(59,130,246,0.1)_0%,transparent_60%)] before:opacity-0 before:transition-opacity before:duration-[400ms] hover:-translate-y-3 hover:border-blue-500/50 hover:shadow-[0_20px_48px_rgba(0,0,0,0.25)] hover:before:opacity-100">
+    <div className="relative flex h-full flex-col overflow-hidden rounded-[clamp(1rem,2vw,1.5rem)] border-2 border-white/[0.08] bg-white/[0.05] px-[clamp(1.5rem,3vw,2rem)] py-[clamp(1.75rem,4vw,2.5rem)] text-center shadow-[0_8px_24px_rgba(0,0,0,0.15)] backdrop-blur-[10px] transition-all duration-[400ms] ease-[cubic-bezier(0.4,0,0.2,1)] before:pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(135deg,rgba(59,130,246,0.1)_0%,transparent_60%)] before:opacity-0 before:transition-opacity before:duration-[400ms] hover:-translate-y-3 hover:border-blue-500/50 hover:shadow-[0_20px_48px_rgba(0,0,0,0.25)] hover:before:opacity-100">
       <div
         className={`absolute -top-3.5 left-1/2 z-10 flex h-[clamp(2.5rem,6vw,3rem)] min-w-[clamp(2.5rem,6vw,3rem)] -translate-x-1/2 items-center justify-center rounded-full bg-gradient-to-br px-2 font-bold text-white shadow-[0_4px_12px_rgba(0,0,0,0.3)] ${event.badgeClass}`}
       >
@@ -327,7 +347,7 @@ function EventCard({ event }: { event: EventInfo }) {
         {event.description}
       </p>
 
-      <div className="relative z-[1] mt-[clamp(1rem,2vw,1.25rem)] flex flex-col gap-[clamp(0.375rem,1vw,0.5rem)] border-t border-white/10 pt-[clamp(0.75rem,2vw,1rem)]">
+      <div className="relative z-[1] mt-auto flex flex-col gap-[clamp(0.375rem,1vw,0.5rem)] border-t border-white/10 pt-[clamp(0.75rem,2vw,1rem)]">
         <span className="text-[clamp(0.75rem,1.5vw,0.813rem)] font-semibold tracking-wide text-blue-400">
           {slotLabel}
         </span>
@@ -340,43 +360,139 @@ function EventCard({ event }: { event: EventInfo }) {
   );
 }
 
+function ScheduleSlotCard({
+  title,
+  time,
+  events,
+  accentClass,
+  dotClass,
+}: {
+  title: string;
+  time: string;
+  events: EventName[];
+  accentClass: string;
+  dotClass: string;
+}) {
+  return (
+    <div className="rounded-[clamp(1rem,2vw,1.25rem)] border-2 border-white/[0.08] bg-white/[0.05] p-[clamp(1rem,2.5vw,1.5rem)] backdrop-blur-[10px]">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <h3 className="text-lg font-bold text-white">{title}</h3>
+        <span className={`slot-badge ${accentClass}`}>{time}</span>
+      </div>
+      <ul className="space-y-2 text-sm text-slate-200/85">
+        {events.map((event) => (
+          <li key={event} className="flex items-center gap-2">
+            <span className={`h-2 w-2 shrink-0 rounded-full ${dotClass}`} />
+            {event}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function ScheduleStrip() {
+  return (
+    <section className="relative bg-[#0f172a] px-[clamp(1rem,3vw,1.5rem)] py-[clamp(2rem,5vw,3.5rem)]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
+      <Reveal className="mx-auto max-w-[1280px]">
+        <div className="mb-[clamp(1.25rem,3vw,2rem)] text-center">
+          <h2 className="text-[clamp(1.5rem,4vw,2.25rem)] font-extrabold tracking-tight text-white">
+            Schedule at a Glance
+          </h2>
+          <p className="mt-2 text-sm text-slate-400 sm:text-base">
+            Two slots, eight events — plan your day
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-[clamp(1rem,2.5vw,1.5rem)] md:grid-cols-2">
+          <ScheduleSlotCard
+            title="Slot 1"
+            time={SLOT_1_TIME}
+            events={SLOT_1_EVENTS.filter((e) => EVENT_CONFIG[e].slot === "1")}
+            accentClass="slot-1"
+            dotClass="bg-purple-400"
+          />
+          <ScheduleSlotCard
+            title="Slot 2"
+            time={SLOT_2_TIME}
+            events={SLOT_2_EVENTS.filter((e) => EVENT_CONFIG[e].slot === "2")}
+            accentClass="slot-2"
+            dotClass="bg-pink-400"
+          />
+        </div>
+
+        <div className="mx-auto mt-4 flex w-fit max-w-full items-center gap-2 rounded-full border border-red-500/25 bg-[linear-gradient(135deg,rgba(239,68,68,0.14),rgba(220,38,38,0.07))] px-4 py-1.5 text-xs font-medium text-red-300 backdrop-blur-sm sm:text-sm">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0 text-red-400">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 6v6l4 2" />
+          </svg>
+          <span>
+            <strong className="font-semibold text-red-400">Bid Mayhem</strong>{" "}
+            spans both slots (11:00 AM – 4:00 PM): Prelims in Slot 1, Mains in
+            Slot 2.
+          </span>
+        </div>
+      </Reveal>
+    </section>
+  );
+}
+
 function EventsSection() {
   return (
-    <section className="mx-auto max-w-[1280px] px-[clamp(1rem,3vw,1.5rem)] py-[clamp(3rem,8vw,6rem)]">
-      <div className="mb-[clamp(2.5rem,6vw,4rem)] text-center">
-        <span className="mb-[clamp(0.75rem,2vw,1rem)] inline-block rounded-full bg-[linear-gradient(135deg,#DBEAFE_0%,#BFDBFE_100%)] px-[clamp(0.875rem,2vw,1.25rem)] py-[clamp(0.375rem,1vw,0.5rem)] text-[clamp(0.75rem,1.5vw,0.875rem)] font-semibold tracking-wider text-blue-900 uppercase shadow-[0_2px_8px_rgba(37,99,235,0.15)]">
-          Technical Events
-        </span>
-        <h2 className="text-[clamp(2rem,6vw,3.5rem)] font-extrabold leading-tight tracking-tight text-white">
-          Challenge Your Skills
-        </h2>
-        <p className="mx-auto mt-[clamp(0.75rem,2vw,1rem)] max-w-[42rem] text-[clamp(0.938rem,2vw,1.125rem)] leading-relaxed text-slate-400">
-          Push your technical boundaries with these cutting-edge competitions
-        </p>
+    <section className="relative overflow-hidden bg-[radial-gradient(ellipse_at_bottom,#1e293b_0%,#0f172a_100%)]">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 overflow-hidden"
+      >
+        <div className="animate-float absolute -left-[10%] top-[12%] h-72 w-72 rounded-full bg-blue-600 opacity-10 blur-[80px]" />
+        <div className="animate-float-delay absolute -right-[10%] bottom-[8%] h-80 w-80 rounded-full bg-purple-600 opacity-10 blur-[80px]" />
       </div>
 
-      <div className="mb-[clamp(4rem,10vw,8rem)] grid grid-cols-1 gap-[clamp(1.25rem,3vw,1.75rem)] sm:grid-cols-2 lg:grid-cols-4">
-        {TECH_EVENTS.map((event) => (
-          <EventCard key={event.name} event={event} />
-        ))}
-      </div>
+      <div className="relative z-[1] mx-auto max-w-[1280px] px-[clamp(1rem,3vw,1.5rem)] py-[clamp(3rem,8vw,6rem)]">
+        <Reveal>
+          <div className="mb-[clamp(2.5rem,6vw,4rem)] text-center">
+            <span className="mb-[clamp(0.75rem,2vw,1rem)] inline-block rounded-full bg-[linear-gradient(135deg,#DBEAFE_0%,#BFDBFE_100%)] px-[clamp(0.875rem,2vw,1.25rem)] py-[clamp(0.375rem,1vw,0.5rem)] text-[clamp(0.75rem,1.5vw,0.875rem)] font-semibold tracking-wider text-blue-900 uppercase shadow-[0_2px_8px_rgba(37,99,235,0.15)]">
+              Technical Events
+            </span>
+            <h2 className="text-[clamp(2rem,6vw,3.5rem)] font-extrabold leading-tight tracking-tight text-white">
+              Challenge Your Skills
+            </h2>
+            <p className="mx-auto mt-[clamp(0.75rem,2vw,1rem)] max-w-[42rem] text-[clamp(0.938rem,2vw,1.125rem)] leading-relaxed text-slate-400">
+              Push your technical boundaries with these cutting-edge competitions
+            </p>
+          </div>
+        </Reveal>
 
-      <div className="mb-[clamp(4rem,10vw,8rem)] text-center">
-        <span className="mb-[clamp(0.75rem,2vw,1rem)] inline-block rounded-full bg-[linear-gradient(135deg,#FCE7F3_0%,#FBCFE8_100%)] px-[clamp(0.875rem,2vw,1.25rem)] py-[clamp(0.375rem,1vw,0.5rem)] text-[clamp(0.75rem,1.5vw,0.875rem)] font-semibold tracking-wider text-pink-800 uppercase shadow-[0_2px_8px_rgba(236,72,153,0.15)]">
-          Non-Technical Events
-        </span>
-        <h2 className="text-[clamp(2rem,6vw,3.5rem)] font-extrabold leading-tight tracking-tight text-white">
-          Fun &amp; Creativity
-        </h2>
-        <p className="mx-auto mt-[clamp(0.75rem,2vw,1rem)] max-w-[42rem] text-[clamp(0.938rem,2vw,1.125rem)] leading-relaxed text-slate-400">
-          Unleash your creativity and team spirit with these exciting events
-        </p>
-      </div>
+        <div className="mb-[clamp(4rem,10vw,8rem)] grid grid-cols-1 gap-[clamp(1.25rem,3vw,1.75rem)] sm:grid-cols-2 lg:grid-cols-4">
+          {TECH_EVENTS.map((event, i) => (
+            <Reveal key={event.name} delay={(i % 4) * 90} className="h-full">
+              <EventCard event={event} />
+            </Reveal>
+          ))}
+        </div>
 
-      <div className="grid grid-cols-1 gap-[clamp(1.25rem,3vw,1.75rem)] sm:grid-cols-2 lg:grid-cols-4">
-        {NON_TECH_EVENTS.map((event) => (
-          <EventCard key={event.name} event={event} />
-        ))}
+        <Reveal>
+          <div className="mb-[clamp(4rem,10vw,8rem)] text-center">
+            <span className="mb-[clamp(0.75rem,2vw,1rem)] inline-block rounded-full bg-[linear-gradient(135deg,#FCE7F3_0%,#FBCFE8_100%)] px-[clamp(0.875rem,2vw,1.25rem)] py-[clamp(0.375rem,1vw,0.5rem)] text-[clamp(0.75rem,1.5vw,0.875rem)] font-semibold tracking-wider text-pink-800 uppercase shadow-[0_2px_8px_rgba(236,72,153,0.15)]">
+              Non-Technical Events
+            </span>
+            <h2 className="text-[clamp(2rem,6vw,3.5rem)] font-extrabold leading-tight tracking-tight text-white">
+              Fun &amp; Creativity
+            </h2>
+            <p className="mx-auto mt-[clamp(0.75rem,2vw,1rem)] max-w-[42rem] text-[clamp(0.938rem,2vw,1.125rem)] leading-relaxed text-slate-400">
+              Unleash your creativity and team spirit with these exciting events
+            </p>
+          </div>
+        </Reveal>
+
+        <div className="grid grid-cols-1 gap-[clamp(1.25rem,3vw,1.75rem)] sm:grid-cols-2 lg:grid-cols-4">
+          {NON_TECH_EVENTS.map((event, i) => (
+            <Reveal key={event.name} delay={(i % 4) * 90} className="h-full">
+              <EventCard event={event} />
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -388,6 +504,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <ScheduleStrip />
       <EventsSection />
     </>
   );

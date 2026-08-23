@@ -8,10 +8,14 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { Loader2 } from "lucide-react";
+
 import { AuthShell } from "@/components/auth/auth-shell";
+import { PasswordInput } from "@/components/auth/password-input";
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { selectClass } from "@/components/ui/select-classes";
 import { DEPARTMENTS, SHIFTS, type Department, type Shift } from "@/lib/constants";
 import { ApiError, NetworkError } from "@/lib/api-client";
 import { registerLeader } from "@/services/auth";
@@ -123,11 +127,12 @@ export default function RegisterPage() {
 
   return (
     <AuthShell>
-      <h2 className="mb-4 text-2xl font-bold">Student Leader Registration</h2>
-      <p className="mb-4 text-gray-500">
+      <h2 className="text-2xl font-bold tracking-tight">
+        Student Leader Registration
+      </h2>
+      <p className="mb-8 mt-1 text-sm text-gray-500">
         Register to lead your team at AION 2K26
       </p>
-      <hr className="mb-6" />
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -135,12 +140,16 @@ export default function RegisterPage() {
         className="space-y-5 text-left"
       >
         <Field>
-          <FieldLabel htmlFor="name">Name</FieldLabel>
+          <FieldLabel htmlFor="name">
+            Name
+            <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
+          </FieldLabel>
           <Input
             id="name"
             type="text"
             placeholder="Enter your full name"
             autoComplete="name"
+            aria-required="true"
             aria-invalid={!!errors.name}
             {...register("name")}
           />
@@ -149,7 +158,10 @@ export default function RegisterPage() {
 
         <div className="grid gap-5 sm:grid-cols-2">
           <Field>
-            <FieldLabel htmlFor="mobile">Mobile Number</FieldLabel>
+            <FieldLabel htmlFor="mobile">
+              Mobile Number
+              <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
+            </FieldLabel>
             <Input
               id="mobile"
               type="tel"
@@ -157,6 +169,7 @@ export default function RegisterPage() {
               placeholder="e.g., 9876543210"
               maxLength={10}
               autoComplete="tel"
+              aria-required="true"
               aria-invalid={!!errors.mobile}
               {...register("mobile")}
             />
@@ -164,12 +177,16 @@ export default function RegisterPage() {
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="email">Email</FieldLabel>
+            <FieldLabel htmlFor="email">
+              Email
+              <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
+            </FieldLabel>
             <Input
               id="email"
               type="email"
               placeholder="Enter your email"
               autoComplete="email"
+              aria-required="true"
               aria-invalid={!!errors.email}
               {...register("email")}
             />
@@ -179,10 +196,14 @@ export default function RegisterPage() {
 
         <div className="grid gap-5 sm:grid-cols-2">
           <Field>
-            <FieldLabel htmlFor="department">Department</FieldLabel>
+            <FieldLabel htmlFor="department">
+              Department
+              <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
+            </FieldLabel>
             <select
               id="department"
-              className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+              className={selectClass}
+              aria-required="true"
               aria-invalid={!!errors.department}
               {...register("department")}
             >
@@ -199,10 +220,14 @@ export default function RegisterPage() {
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="shift">Shift</FieldLabel>
+            <FieldLabel htmlFor="shift">
+              Shift
+              <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
+            </FieldLabel>
             <select
               id="shift"
-              className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+              className={selectClass}
+              aria-required="true"
               aria-invalid={!!errors.shift}
               {...register("shift")}
             >
@@ -218,13 +243,17 @@ export default function RegisterPage() {
         </div>
 
         <Field>
-          <FieldLabel htmlFor="college">College</FieldLabel>
+          <FieldLabel htmlFor="college">
+            College
+            <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
+          </FieldLabel>
           {collegeLoadFailed ? (
             <>
               <Input
                 id="college"
                 type="text"
                 placeholder="Enter your college name"
+                aria-required="true"
                 aria-invalid={!!errors.college}
                 {...register("college")}
               />
@@ -235,7 +264,8 @@ export default function RegisterPage() {
           ) : colleges.length > 0 ? (
             <select
               id="college"
-              className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+              className={selectClass}
+              aria-required="true"
               aria-invalid={!!errors.college}
               {...register("college")}
             >
@@ -251,6 +281,7 @@ export default function RegisterPage() {
               id="college"
               type="text"
               placeholder="Loading colleges... or type your college name"
+              aria-required="true"
               aria-invalid={!!errors.college}
               {...register("college")}
             />
@@ -260,12 +291,15 @@ export default function RegisterPage() {
 
         <div className="grid gap-5 sm:grid-cols-2">
           <Field>
-            <FieldLabel htmlFor="password">Password</FieldLabel>
-            <Input
+            <FieldLabel htmlFor="password">
+              Password
+              <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
+            </FieldLabel>
+            <PasswordInput
               id="password"
-              type="password"
               placeholder="Create a password"
               autoComplete="new-password"
+              aria-required="true"
               aria-invalid={!!errors.password}
               {...register("password")}
             />
@@ -278,12 +312,15 @@ export default function RegisterPage() {
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
-            <Input
+            <FieldLabel htmlFor="confirmPassword">
+              Confirm Password
+              <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
+            </FieldLabel>
+            <PasswordInput
               id="confirmPassword"
-              type="password"
               placeholder="Re-enter password"
               autoComplete="new-password"
+              aria-required="true"
               aria-invalid={!!errors.confirmPassword}
               {...register("confirmPassword")}
             />
@@ -296,9 +333,16 @@ export default function RegisterPage() {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full py-3 text-base"
+          className="mt-2 w-full rounded-full bg-gradient-to-r from-blue-600 to-purple-600 py-3 text-base text-white shadow-[0_8px_20px_rgba(59,130,246,0.35)] transition-all hover:-translate-y-0.5 hover:opacity-95 disabled:pointer-events-none disabled:opacity-60 disabled:shadow-none"
         >
-          {isSubmitting ? "Please wait..." : "Register"}
+          {isSubmitting ? (
+            <span className="inline-flex items-center justify-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Please wait…
+            </span>
+          ) : (
+            "Register"
+          )}
         </Button>
 
         <p className="mt-2 text-center text-sm text-gray-500">

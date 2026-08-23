@@ -1,4 +1,5 @@
 import { api } from "@/lib/api-client";
+import type { RegisterTeamPaymentInfo } from "@/services/payment";
 import type {
   CandidatesResponse,
   LeaderStats,
@@ -6,7 +7,7 @@ import type {
   TeamRegistrationInput,
 } from "@/lib/types";
 
-export interface RegisterTeamResult {
+export interface RegisterTeamResult extends RegisterTeamPaymentInfo {
   created?: number;
   updated?: number;
   message?: string;
@@ -21,8 +22,17 @@ export async function registerTeam(
     token,
     body: input,
   });
-  const raw = body as unknown as { created?: number; updated?: number };
-  return { created: raw.created, updated: raw.updated, message: body.message };
+  const raw = body as unknown as RegisterTeamResult;
+  return {
+    created: raw.created,
+    updated: raw.updated,
+    message: body.message,
+    uniqueStudents: raw.uniqueStudents,
+    amountDuePaises: raw.amountDuePaises,
+    currency: raw.currency,
+    upiUri: raw.upiUri ?? null,
+    paymentStatus: raw.paymentStatus,
+  };
 }
 
 export async function getCandidates(

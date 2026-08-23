@@ -73,3 +73,6 @@ export const DEPT_LABELS: Record<Department, string> = {
   ds: "Data Science",
   ca: "Computer Applications",
 };
+
+export const MAX_PROOF_MB = 5;
+export const UTR_PATTERN = /^[A-Za-z0-9]{8,22}$/;

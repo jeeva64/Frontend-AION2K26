@@ -9,6 +9,7 @@ import { TN_DISTRICTS } from '@/lib/constants/admin';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel } from '@/components/ui/field';
+import { selectClass, selectClassCompact } from '@/components/ui/select-classes';
 import {
   Table,
   TableHeader,
@@ -33,9 +34,6 @@ const btnSmDanger =
   'px-3 py-1.5 bg-red-50 text-red-600 text-xs font-medium rounded-lg border border-red-200 hover:bg-red-100 transition';
 const btnSmPrimary =
   'px-3 py-1.5 bg-aion-primary text-white text-xs font-medium rounded-lg hover:bg-aion-primary-hover transition disabled:opacity-50 disabled:pointer-events-none';
-
-const selectClass =
-  'h-8 w-full rounded-lg border border-input bg-white px-2.5 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50';
 
 function generateAutoCollegeId(district: string, existingIds: string[]): string {
   if (!district) return '';
@@ -424,7 +422,7 @@ function CollegeRow({
           <select
             value={draft.district}
             onChange={(e) => setDraft((d) => ({ ...d, district: e.target.value }))}
-            className="h-7 w-full rounded-lg border border-input bg-white px-2 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            className={selectClassCompact}
           >
             <option value="">Select District</option>
             {TN_DISTRICTS.map((d) => (
