@@ -18,11 +18,14 @@ import {
   TableCell,
 } from '@/components/ui/table';
 import type { EventRegEntry } from '@/services/admin';
+import type { RegisteredStudent } from '@/lib/types';
+import { EditMemberModal } from './EditMemberModal';
 
 export function ViewEventPanel() {
   const { data, eventName, isLoading, isFetching, error, search, deleteByEvent } = useViewEventRegs();
   const [selectedEvent, setSelectedEvent] = useState('');
   const [searched, setSearched] = useState(false);
+  const [editMember, setEditMember] = useState<RegisteredStudent | null>(null);
 
   const handleSearch = () => {
     if (!selectedEvent) {
@@ -142,6 +145,7 @@ export function ViewEventPanel() {
                     teamIndex={teamIndex}
                     eventName={eventName}
                     onRemove={handleRemoveFromEvent}
+                    onEdit={setEditMember}
                   />
                 ))}
               </div>
@@ -155,6 +159,13 @@ export function ViewEventPanel() {
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-aion-primary border-t-transparent" />
         </div>
       )}
+
+      <EditMemberModal
+        open={editMember !== null}
+        onOpenChange={(open) => { if (!open) setEditMember(null); }}
+        member={editMember}
+        onUpdated={() => { if (selectedEvent) search(selectedEvent); }}
+      />
     </div>
   );
 }
@@ -164,11 +175,13 @@ function TeamCard({
   teamIndex,
   eventName,
   onRemove,
+  onEdit,
 }: {
   team: EventRegEntry;
   teamIndex: number;
   eventName: string;
   onRemove: (leaderId: string, event: string) => void;
+  onEdit: (member: RegisteredStudent) => void;
 }) {
   return (
     <div className="bg-aion-card rounded-xl border border-aion p-6">
@@ -197,6 +210,7 @@ function TeamCard({
             <TableHead>Mobile</TableHead>
             <TableHead>Event 1</TableHead>
             <TableHead>Event 2</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -214,6 +228,14 @@ function TeamCard({
               <TableCell>
                 {member.event2 || 'N/A'}
                 {member.slot2 && <span className="text-xs text-aion-muted ml-1">(Slot {member.slot2})</span>}
+              </TableCell>
+              <TableCell>
+                <button
+                  onClick={() => onEdit(member as RegisteredStudent)}
+                  className="px-2 py-1 bg-blue-50 text-blue-600 text-xs font-medium rounded-lg border border-blue-200 hover:bg-blue-100 transition"
+                >
+                  Edit
+                </button>
               </TableCell>
             </TableRow>
           ))}

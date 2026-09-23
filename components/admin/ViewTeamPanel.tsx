@@ -21,6 +21,7 @@ import {
   TableCell,
 } from '@/components/ui/table';
 import type { RegisteredStudent } from '@/lib/types';
+import { EditMemberModal } from './EditMemberModal';
 
 const DEPT_LABELS: Record<string, string> = Object.fromEntries(
   DEPARTMENTS.map((d) => [d.value, d.label])
@@ -49,6 +50,7 @@ export function ViewTeamPanel() {
   const [college, setCollege] = useState('');
   const [department, setDepartment] = useState<Department | ''>('');
   const [searched, setSearched] = useState(false);
+  const [editMember, setEditMember] = useState<RegisteredStudent | null>(null);
 
   const { data: collegeDepts = [], isLoading: loadingDropdowns } =
     useQuery<CollegeDepartments[], Error>({
@@ -206,13 +208,14 @@ export function ViewTeamPanel() {
                     <TableHead>Mobile</TableHead>
                     <TableHead>Food</TableHead>
                     <TableHead>Leader ID</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {groups.map((group) => (
                     <Fragment key={group.leaderId}>
                       <TableRow key={`header-${group.leaderId}`} className="bg-red-50 border-t-2 border-red-200 hover:bg-red-50">
-                        <TableCell colSpan={9} className="!p-3">
+                        <TableCell colSpan={10} className="!p-3">
                           <div className="flex justify-between items-center">
                             <div>
                               <span className="text-sm font-semibold text-gray-900">Team Leader: </span>
@@ -255,6 +258,14 @@ export function ViewTeamPanel() {
                             {member.foodPreference === 'vegetarian' ? 'Veg' : member.foodPreference === 'non-vegetarian' ? 'Non-Veg' : 'N/A'}
                           </TableCell>
                           <TableCell className="font-mono text-xs">{member.leaderId || 'N/A'}</TableCell>
+                          <TableCell>
+                            <button
+                              onClick={() => setEditMember(member)}
+                              className="px-2 py-1 bg-blue-50 text-blue-600 text-xs font-medium rounded-lg border border-blue-200 hover:bg-blue-100 transition"
+                            >
+                              Edit
+                            </button>
+                          </TableCell>
                         </TableRow>
                       ))}
                     </Fragment>
@@ -271,6 +282,15 @@ export function ViewTeamPanel() {
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-aion-primary border-t-transparent" />
         </div>
       )}
+
+      <EditMemberModal
+        open={editMember !== null}
+        onOpenChange={(open) => { if (!open) setEditMember(null); }}
+        member={editMember}
+        onUpdated={() => {
+          if (college && department) search(college.trim(), department);
+        }}
+      />
     </div>
   );
 }

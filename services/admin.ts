@@ -190,3 +190,26 @@ export async function setRegistrationDeadline(
     registrationDeadline: raw.registrationDeadline ?? null,
   };
 }
+
+export interface UpdateRegistrationInput {
+  name?: string;
+  registerNumber?: string;
+  mobile?: string;
+  degree?: string;
+  foodPreference?: string;
+  event1?: string;
+  event2?: string | null;
+}
+
+export async function updateRegistration(
+  regId: number,
+  input: UpdateRegistrationInput,
+  token: string
+): Promise<{ message?: string }> {
+  const body = await api<unknown>(`/admin/registration/${regId}`, {
+    method: "PUT",
+    token,
+    body: input,
+  });
+  return { message: body.message };
+}
