@@ -7,6 +7,7 @@ export const metadata: Metadata = {
     default: "Super Admin Dashboard",
     template: "%s | Admin",
   },
+  robots: { index: false, follow: false },
 };
 
 export default function AdminLayoutWrapper({

@@ -111,7 +111,7 @@ export function DashboardPanel() {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="font-orbitron text-2xl font-bold text-aion-primary">Registration Statistics</h2>
-          <p className="text-aion-muted text-sm mt-1">Overview of all registrations for AION 2K26</p>
+          <p className="text-aion-muted text-sm mt-1">Overview of all registrations for AION 2K26 2.0</p>
         </div>
         <button
           onClick={() => refetch()}

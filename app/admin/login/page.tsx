@@ -82,7 +82,7 @@ export default function AdminLoginPage() {
             </svg>
           </div>
           <h2 className="text-3xl font-bold text-gray-900">Admin Login</h2>
-          <p className="mt-2 text-gray-500">Manage AION 2K26 Registrations</p>
+          <p className="mt-2 text-gray-500">Manage AION 2K26 2.0 Registrations</p>
         </div>
 
         <form

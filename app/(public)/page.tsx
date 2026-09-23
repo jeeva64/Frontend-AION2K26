@@ -14,7 +14,10 @@ import {
 export const metadata: Metadata = {
   title: "Home",
   description:
-    "AION 2K26 — National Level Technical Symposium. 8 events, 1 day, ₹200 per participant. February 13, 2026 at St. Joseph's College.",
+    "AION 2K26 2.0 - State Level Technical Symposium. 8 events, 1 day, ₹200 per participant. October 7, 2026 at St. Joseph's College.",
+  alternates: {
+    canonical: "/",
+  },
 };
 
 function slotLabelText(slot: EventSlot): string {
@@ -38,12 +41,36 @@ const ORB_CLASSES = [
 ];
 
 const PARTICLES = [
-  { className: "top-[20%] left-[15%]", style: { "--tx": "50px", "--ty": "-80px" }, delay: "0s" },
-  { className: "top-[40%] right-[20%]", style: { "--tx": "-60px", "--ty": "70px" }, delay: "1s" },
-  { className: "bottom-[30%] left-[25%]", style: { "--tx": "40px", "--ty": "-60px" }, delay: "2s" },
-  { className: "top-[60%] right-[15%]", style: { "--tx": "-50px", "--ty": "80px" }, delay: "3s" },
-  { className: "bottom-[20%] left-[40%]", style: { "--tx": "70px", "--ty": "-50px" }, delay: "1.5s" },
-  { className: "top-[70%] right-[35%]", style: { "--tx": "-40px", "--ty": "60px" }, delay: "2.5s" },
+  {
+    className: "top-[20%] left-[15%]",
+    style: { "--tx": "50px", "--ty": "-80px" },
+    delay: "0s",
+  },
+  {
+    className: "top-[40%] right-[20%]",
+    style: { "--tx": "-60px", "--ty": "70px" },
+    delay: "1s",
+  },
+  {
+    className: "bottom-[30%] left-[25%]",
+    style: { "--tx": "40px", "--ty": "-60px" },
+    delay: "2s",
+  },
+  {
+    className: "top-[60%] right-[15%]",
+    style: { "--tx": "-50px", "--ty": "80px" },
+    delay: "3s",
+  },
+  {
+    className: "bottom-[20%] left-[40%]",
+    style: { "--tx": "70px", "--ty": "-50px" },
+    delay: "1.5s",
+  },
+  {
+    className: "top-[70%] right-[35%]",
+    style: { "--tx": "-40px", "--ty": "60px" },
+    delay: "2.5s",
+  },
 ];
 
 function HeroBackground() {
@@ -53,7 +80,10 @@ function HeroBackground() {
     "linear-gradient(135deg, #F59E0B 0%, #EF4444 100%)",
   ];
   return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 overflow-hidden"
+    >
       {orbGradients.map((bg, i) => (
         <div
           key={i}
@@ -109,7 +139,9 @@ function InfoRow({
       className={`mx-auto flex w-fit max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-full border px-2.5 py-1.5 backdrop-blur-sm ${styles}`}
     >
       <span className={`h-4 w-4 shrink-0 ${iconColor}`}>{icon}</span>
-      <span className={`text-[clamp(0.6rem,1.4vw,0.82rem)] font-medium leading-snug ${textColor}`}>
+      <span
+        className={`text-[clamp(0.6rem,1.4vw,0.82rem)] font-medium leading-snug ${textColor}`}
+      >
         {children}
       </span>
     </div>
@@ -118,16 +150,16 @@ function InfoRow({
 
 function CollegeHeader() {
   return (
-    <div className="flex w-full animate-fade-in-up flex-row items-center justify-center gap-[clamp(0.5rem,2vw,1.15rem)]">
+    <div className="flex w-full animate-fade-in-up flex-row flex-wrap items-center justify-center gap-x-[clamp(0.5rem,2vw,1.15rem)] gap-y-3">
       <Image
         src="/clg-logo.png"
         alt="College Logo"
         width={125}
         height={125}
         priority
-        className="h-[clamp(4.2rem,9vw,7.8rem)] w-[clamp(4.2rem,9vw,7.8rem)] shrink-0 animate-glow object-contain transition-transform hover:rotate-6 hover:scale-110"
+        className="h-[clamp(3rem,9vw,7.8rem)] w-[clamp(3rem,9vw,7.8rem)] shrink-0 animate-glow object-contain transition-transform hover:rotate-6 hover:scale-110"
       />
-      <div className="min-w-0 flex-1 text-center">
+      <div className="min-w-0 w-full text-center sm:w-auto sm:flex-1">
         <p className="mb-0.5 text-[clamp(0.85rem,1.6vw,1rem)] font-semibold tracking-widest text-blue-400 uppercase">
           Department of Artificial Intelligence
         </p>
@@ -141,18 +173,35 @@ function CollegeHeader() {
           <InfoRow
             variant="naac"
             icon={
-              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-full w-full">
+              <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-full w-full"
+              >
                 <path d="M10 2l2.4 5.6L18 8.5l-4 3.8.9 5.7L10 15l-4.9 3 .9-5.7-4-3.8 5.6-.9z" />
               </svg>
             }
           >
             Accredited at <strong>A++ (Cycle IV)</strong> by NAAC
-            <span className="mx-1 opacity-50">•</span> Special Heritage Status by UGC
+            <span className="mx-1 opacity-50">•</span> Special Heritage Status
+            by UGC
           </InfoRow>
           <InfoRow
             variant="standards"
             icon={
-              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-full w-full">
+              <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-full w-full"
+              >
                 <rect x="2" y="11" width="3" height="7" rx="0.8" />
                 <rect x="8.5" y="7" width="3" height="11" rx="0.8" />
                 <rect x="15" y="3" width="3" height="15" rx="0.8" />
@@ -171,7 +220,7 @@ function CollegeHeader() {
         width={125}
         height={125}
         priority
-        className="hidden h-[clamp(4.2rem,9vw,7.8rem)] w-[clamp(4.2rem,9vw,7.8rem)] shrink-0 animate-glow object-contain transition-transform hover:rotate-6 hover:scale-110 sm:block"
+        className="h-[clamp(3rem,9vw,7.8rem)] w-[clamp(3rem,9vw,7.8rem)] shrink-0 animate-glow object-contain transition-transform hover:rotate-6 hover:scale-110"
       />
     </div>
   );
@@ -179,10 +228,10 @@ function CollegeHeader() {
 
 function Hero() {
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_top,#1e293b_0%,#0f172a_100%)] px-[clamp(1rem,3vw,1.5rem)] py-[clamp(5rem,12vh,7rem)]">
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_top,#1e293b_0%,#0f172a_100%)] px-[clamp(1rem,3vw,1.5rem)] pt-[calc(3.5rem+1.25rem)] pb-[clamp(1.5rem,4vh,3rem)]">
       <HeroBackground />
       <div className="relative z-10 w-full max-w-[1280px] mx-auto">
-        <div className="flex w-full flex-col items-center gap-[clamp(1rem,1.8vh,1.5rem)]">
+        <div className="flex w-full flex-col items-center gap-[clamp(0.5rem,1.2vh,1rem)]">
           <CollegeHeader />
 
           <div className="inline-flex animate-fade-in-up items-center gap-2 rounded-full border-2 border-blue-500/20 bg-white/[0.08] px-[clamp(0.875rem,2.2vw,1.15rem)] py-[clamp(0.375rem,1vh,0.5rem)] text-[clamp(0.719rem,1.25vw,0.813rem)] font-semibold text-blue-300 shadow-[0_4px_16px_rgba(59,130,246,0.2)] backdrop-blur-[10px] [animation-delay:0.2s]">
@@ -195,50 +244,58 @@ function Hero() {
 
           <div className="animate-fade-in-up [animation-delay:0.35s]">
             <Image
-              src="/logo.png"
-              alt="AION 2K26"
-              width={520}
-              height={220}
+              src="/logo-v2.png"
+              alt="AION 2K26 2.0"
+              width={1665}
+              height={945}
               priority
-              className="w-[min(80vw,520px)]"
-              style={{ height: "auto" }}
+              className="max-h-[min(28vh,240px)] max-w-[min(80vw,520px)] w-auto"
+              style={{ width: "auto", height: "auto" }}
             />
           </div>
 
-          <div className="flex animate-fade-in-up items-center gap-2 rounded-full bg-white/[0.08] px-[clamp(0.875rem,2vw,1.15rem)] py-[clamp(0.375rem,1vh,0.5rem)] text-[clamp(0.656rem,1.3vw,0.8rem)] font-medium text-slate-300 backdrop-blur-sm [animation-delay:0.45s]">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0 text-blue-400">
+          <div className="flex animate-fade-in-up flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-full bg-white/[0.08] px-[clamp(0.875rem,2vw,1.15rem)] py-[clamp(0.375rem,1vh,0.5rem)] text-center text-[clamp(0.656rem,1.3vw,0.8rem)] font-medium text-slate-300 backdrop-blur-sm [animation-delay:0.45s]">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-4 w-4 shrink-0 text-blue-400"
+            >
               <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <span>February 13, 2026</span>
+            <span>October 7, 2026</span>
             <span className="opacity-50">|</span>
-            <span>Friday @ Sail Hall, Arrupe Library</span>
+            <span>Wednesday @ Sail Hall, Arrupe Library</span>
           </div>
 
           <div className="grid animate-fade-in-up grid-cols-3 gap-2 [animation-delay:0.55s] sm:gap-3">
             <div className="rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-center backdrop-blur-[10px] sm:px-6 sm:py-4">
-              <div className="text-xl font-extrabold text-blue-400 sm:text-3xl">8</div>
-              <div className="mt-1 text-xs text-slate-300 sm:text-sm">Events</div>
+              <div className="text-xl font-extrabold text-blue-400 sm:text-3xl">
+                8
+              </div>
+              <div className="mt-1 text-xs text-slate-300 sm:text-sm">
+                Events
+              </div>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-center backdrop-blur-[10px] sm:px-6 sm:py-4">
-              <div className="text-xl font-extrabold text-emerald-400 sm:text-3xl">₹200</div>
-              <div className="mt-1 text-xs text-slate-300 sm:text-sm">Entry Fee</div>
+              <div className="text-xl font-extrabold text-emerald-400 sm:text-3xl">
+                ₹200
+              </div>
+              <div className="mt-1 text-xs text-slate-300 sm:text-sm">
+                Entry Fee
+              </div>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-center backdrop-blur-[10px] sm:px-6 sm:py-4">
-              <div className="text-xl font-extrabold text-amber-400 sm:text-3xl">1 Day</div>
-              <div className="mt-1 text-xs text-slate-300 sm:text-sm">Power-Packed Experience</div>
+              <div className="text-xl font-extrabold text-amber-400 sm:text-3xl">
+                1 Day
+              </div>
+              <div className="mt-1 text-[0.65rem] leading-tight text-slate-300 sm:text-sm">
+                Power-Packed Experience
+              </div>
             </div>
-          </div>
-
-          <div className="flex animate-fade-in-up animate-deadline-pulse items-center gap-2 rounded-full border border-red-500/35 bg-[linear-gradient(135deg,rgba(239,68,68,0.18),rgba(220,38,38,0.1))] px-4 py-1.5 text-[clamp(0.64rem,1.3vw,0.8rem)] font-medium text-red-300 backdrop-blur-[6px] [animation-delay:0.45s]">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0 text-red-400">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 6v6l4 2" />
-            </svg>
-            <span>
-              <strong className="font-bold text-red-400">
-                Registrations close on February 11, 2026 — limited slots!
-              </strong>
-            </span>
           </div>
 
           <div className="mt-1 flex animate-fade-in-up flex-col items-center gap-3 sm:flex-row [animation-delay:0.65s]">
@@ -290,7 +347,7 @@ const TECH_EVENTS: EventInfo[] = [
     name: "VisionX",
     number: "03",
     description:
-      "Showcase creativity by generating AI-based images and videos on an on-the-spot theme.",
+      "Showcase creativity by generating AI-based images and videos on an on the spot theme.",
     badgeClass: "from-purple-500 to-purple-700",
   },
   {
@@ -401,7 +458,7 @@ function ScheduleStrip() {
             Schedule at a Glance
           </h2>
           <p className="mt-2 text-sm text-slate-400 sm:text-base">
-            Two slots, eight events — plan your day
+            Two slots, eight events - plan your day
           </p>
         </div>
 
@@ -423,13 +480,21 @@ function ScheduleStrip() {
         </div>
 
         <div className="mx-auto mt-4 flex w-fit max-w-full items-center gap-2 rounded-full border border-red-500/25 bg-[linear-gradient(135deg,rgba(239,68,68,0.14),rgba(220,38,38,0.07))] px-4 py-1.5 text-xs font-medium text-red-300 backdrop-blur-sm sm:text-sm">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0 text-red-400">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-4 w-4 shrink-0 text-red-400"
+          >
             <circle cx="12" cy="12" r="10" />
             <path d="M12 6v6l4 2" />
           </svg>
           <span>
             <strong className="font-semibold text-red-400">Bid Mayhem</strong>{" "}
-            spans both slots (11:00 AM – 4:00 PM): Prelims in Slot 1, Mains in
+            spans both slots (11:00 AM - 4:00 PM): Prelims in Slot 1, Mains in
             Slot 2.
           </span>
         </div>
@@ -459,7 +524,8 @@ function EventsSection() {
               Challenge Your Skills
             </h2>
             <p className="mx-auto mt-[clamp(0.75rem,2vw,1rem)] max-w-[42rem] text-[clamp(0.938rem,2vw,1.125rem)] leading-relaxed text-slate-400">
-              Push your technical boundaries with these cutting-edge competitions
+              Push your technical boundaries with these cutting-edge
+              competitions
             </p>
           </div>
         </Reveal>
@@ -475,7 +541,7 @@ function EventsSection() {
         <Reveal>
           <div className="mb-[clamp(4rem,10vw,8rem)] text-center">
             <span className="mb-[clamp(0.75rem,2vw,1rem)] inline-block rounded-full bg-[linear-gradient(135deg,#FCE7F3_0%,#FBCFE8_100%)] px-[clamp(0.875rem,2vw,1.25rem)] py-[clamp(0.375rem,1vw,0.5rem)] text-[clamp(0.75rem,1.5vw,0.875rem)] font-semibold tracking-wider text-pink-800 uppercase shadow-[0_2px_8px_rgba(236,72,153,0.15)]">
-              Non-Technical Events
+              Non Technical Events
             </span>
             <h2 className="text-[clamp(2rem,6vw,3.5rem)] font-extrabold leading-tight tracking-tight text-white">
               Fun &amp; Creativity
@@ -501,8 +567,45 @@ function EventsSection() {
 /* ──────────────────────────────────────────────────────────────── */
 
 export default function HomePage() {
+  const eventJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: "AION 2K26 2.0",
+    description:
+      "State Level Technical Symposium with 8 events by the Department of Artificial Intelligence, St. Joseph's College (Autonomous), Tiruchirappalli.",
+    startDate: "2026-10-07",
+    endDate: "2026-10-07",
+    eventStatus: "https://schema.org/EventScheduled",
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    location: {
+      "@type": "Place",
+      name: "St. Joseph's College (Autonomous)",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Tiruchirappalli",
+        addressRegion: "Tamil Nadu",
+        addressCountry: "IN",
+      },
+    },
+    organizer: {
+      "@type": "Organization",
+      name: "Department of Artificial Intelligence, St. Joseph's College (Autonomous)",
+    },
+    offers: {
+      "@type": "Offer",
+      price: "200",
+      priceCurrency: "INR",
+      availability: "https://schema.org/InStock",
+      url: "/register",
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
+      />
       <Hero />
       <ScheduleStrip />
       <EventsSection />

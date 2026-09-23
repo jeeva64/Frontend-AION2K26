@@ -131,7 +131,7 @@ export default function RegisterPage() {
         Student Leader Registration
       </h2>
       <p className="mb-8 mt-1 text-sm text-gray-500">
-        Register to lead your team at AION 2K26
+        Register to lead your team at AION 2K26 2.0
       </p>
 
       <form

@@ -74,10 +74,10 @@ function BrandPanel() {
       />
 
       <Image
-        src="/logo.png"
-        alt="AION 2K26"
-        width={200}
-        height={85}
+        src="/logo-v2.png"
+        alt="AION 2K26 2.0"
+        width={1665}
+        height={945}
         priority
         className="relative w-32"
         style={{ height: "auto" }}
@@ -85,7 +85,7 @@ function BrandPanel() {
 
       <div className="relative space-y-4">
         <h2 className="text-xl font-bold leading-snug">
-          National Level Technical Symposium
+          State Level Technical Symposium
         </h2>
         <p className="text-sm leading-relaxed text-slate-300">
           Department of Artificial Intelligence
@@ -95,7 +95,7 @@ function BrandPanel() {
         <div className="space-y-2 pt-1 text-sm text-slate-300">
           <p className="flex items-center gap-2">
             <CalendarDays className="h-4 w-4 shrink-0 text-blue-400" />
-            February 13, 2026 · Friday
+            October 7, 2026 · Wednesday
           </p>
           <p className="flex items-center gap-2">
             <MapPin className="h-4 w-4 shrink-0 text-blue-400" />
@@ -122,18 +122,18 @@ function BrandBanner() {
   return (
     <div className="flex items-center gap-3 border-b border-slate-100 px-6 py-4 lg:hidden">
       <Image
-        src="/logo.png"
-        alt="AION 2K26"
-        width={120}
-        height={51}
+        src="/logo-v2.png"
+        alt="AION 2K26 2.0"
+        width={1665}
+        height={945}
         priority
         className="h-9 shrink-0"
         style={{ width: "auto" }}
       />
       <p className="min-w-0 text-xs font-medium leading-snug text-slate-500">
-        National Level Technical Symposium
+        State Level Technical Symposium
         <br />
-        Feb 13, 2026 · St. Joseph&apos;s College
+        Oct 7, 2026 · St. Joseph&apos;s College
       </p>
     </div>
   );
@@ -141,9 +141,9 @@ function BrandBanner() {
 
 export function AuthShell({ children }: { children: ReactNode }) {
   return (
-    <section className="relative flex min-h-[calc(100svh-3.5rem)] items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_top,#1e293b_0%,#0f172a_100%)] px-4 py-10 sm:px-6 sm:py-14">
+    <section className="relative flex min-h-[calc(100svh-3.5rem)] items-start justify-center overflow-hidden bg-[radial-gradient(ellipse_at_top,#1e293b_0%,#0f172a_100%)] px-4 pt-[calc(3.5rem+1.5rem)] pb-10 sm:px-6 sm:pt-[calc(3.5rem+2.5rem)] sm:pb-14">
       <AuthHeroBackground />
-      <div className="relative z-10 grid w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-2xl lg:grid-cols-5">
+      <div className="relative z-10 my-auto grid w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-2xl lg:grid-cols-5">
         <BrandPanel />
         <div className="flex flex-col lg:col-span-3">
           <BrandBanner />

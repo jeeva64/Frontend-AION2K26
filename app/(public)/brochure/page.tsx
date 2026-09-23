@@ -1,20 +1,19 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Brochure",
   description:
-    "View the official AION 2K26 invitation and download the symposium rules and event schedule.",
+    "View the official AION 2K26 2.0 invitation and download the symposium rules and event schedule.",
+  alternates: {
+    canonical: "/brochure",
+  },
 };
 
 const GLASS_CARD =
   "rounded-2xl border border-white/10 bg-white/[0.05] p-6 backdrop-blur-[10px] transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]";
-
-const GRADIENT_TEXT =
-  "bg-[linear-gradient(135deg,#667eea_0%,#764ba2_100%)] bg-clip-text text-transparent";
 
 const ORB_GRADIENTS = [
   "linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%)",
@@ -73,10 +72,10 @@ export default function BrochurePage() {
 
       <div className="relative z-10 mx-auto w-full max-w-5xl">
         <div className="mb-6 text-center">
-          <h1 className="mb-4 text-4xl font-extrabold md:text-5xl">
-            AION <span className={GRADIENT_TEXT}>2K26</span> Resources
+          <h1 className="mb-4 text-4xl font-extrabold text-white md:text-5xl">
+            AION 2K26 2.0 Resources
           </h1>
-          <p className="mx-auto max-w-2xl text-slate-300">
+          <p className="mx-auto max-w-2xl text-white/80">
             View the official invitation and download symposium rules and event
             schedule
           </p>
@@ -84,12 +83,12 @@ export default function BrochurePage() {
 
         <div className="grid items-start gap-10 md:grid-cols-2">
           <div className={cn(GLASS_CARD, "text-center")}>
-            <h3 className="mb-4 text-2xl font-bold">🎫 Invitation</h3>
+            <h3 className="mb-4 text-2xl font-bold text-white">🎫 Invitation</h3>
 
             <div className="mb-6 overflow-hidden rounded-xl border border-white/10">
               <Image
                 src="/aion2k26-invitation.jpg"
-                alt="AION 2K26 Invitation"
+                alt="AION 2K26 2.0 Invitation"
                 width={600}
                 height={900}
                 className="h-auto w-full object-cover transition-transform duration-300 hover:scale-105"
@@ -106,32 +105,38 @@ export default function BrochurePage() {
           </div>
 
           <div className={GLASS_CARD}>
-            <h3 className="mb-6 text-center text-2xl font-bold">📄 Downloads</h3>
+            <h3 className="mb-6 text-center text-2xl font-bold text-white">📄 Downloads</h3>
 
             <div className="space-y-5">
-              <Link
-                href="/aion-2k26-overall-rules.pdf"
-                download
-                className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 p-4 transition hover:bg-white/10"
+              <div
+                aria-disabled="true"
+                className="flex cursor-not-allowed items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 p-4 opacity-70"
               >
                 <div>
-                  <p className="text-lg font-semibold">Rules &amp; Regulations</p>
+                  <p className="text-lg font-semibold text-white">
+                    Rules &amp; Regulations
+                  </p>
                   <p className="text-sm text-slate-400">Complete symposium rules</p>
                 </div>
-                <span className="text-xl text-blue-400">⬇</span>
-              </Link>
+                <span className="rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-xs font-semibold whitespace-nowrap text-amber-300">
+                  Coming soon
+                </span>
+              </div>
 
-              <Link
-                href="/aion-2k26-schedule.pdf"
-                download
-                className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 p-4 transition hover:bg-white/10"
+              <div
+                aria-disabled="true"
+                className="flex cursor-not-allowed items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 p-4 opacity-70"
               >
                 <div>
-                  <p className="text-lg font-semibold">Event Schedule</p>
+                  <p className="text-lg font-semibold text-white">
+                    Event Schedule
+                  </p>
                   <p className="text-sm text-slate-400">Full day-wise program</p>
                 </div>
-                <span className="text-xl text-green-400">⬇</span>
-              </Link>
+                <span className="rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-xs font-semibold whitespace-nowrap text-amber-300">
+                  Coming soon
+                </span>
+              </div>
             </div>
           </div>
         </div>

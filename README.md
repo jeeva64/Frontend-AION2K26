@@ -1,6 +1,6 @@
-# AION 2K26 : Frontend
+# AION 2K26 2.0 : Frontend
 
-Frontend for **AION 2K26**, the National Level Technical Symposium of the
+Frontend for **AION 2K26 2.0**, the State Level Technical Symposium of the
 Department of Artificial Intelligence, St. Joseph's College (Autonomous),
 Tiruchirappalli.
 

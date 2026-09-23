@@ -31,7 +31,7 @@ export function Navbar() {
         >
           <span className="text-white">AION</span>
           <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-            2K26
+            2K26 2.0
           </span>
         </Link>
 

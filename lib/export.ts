@@ -45,7 +45,7 @@ export function exportCollegeStats(data: CollegeStat[], filename?: string) {
 
   // Add header rows
   XLSX.utils.sheet_add_aoa(ws, [
-    ["AION 2K26 - College-wise Registration Stats"],
+    ["AION 2K26 2.0 - College-wise Registration Stats"],
     [`Generated: ${new Date().toLocaleString()}`],
     []
   ], { origin: "A1" });

@@ -40,7 +40,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
             <h1 className="font-orbitron text-xl font-bold text-aion-primary">
               {superAdmin ? 'Super Admin Dashboard' : 'Moderator Panel'}
             </h1>
-            <p className="text-xs text-aion-muted">AION 2K26</p>
+            <p className="text-xs text-aion-muted">AION 2K26 2.0</p>
           </div>
           <button
             onClick={() => { clearAllAuth(); router.push('/admin/login'); }}
