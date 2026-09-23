@@ -44,6 +44,7 @@ already in place, current per-route metadata, gaps, and recommended additions.
 | `/dashboard`  | Dashboard \| AION 2K26         | (no description)                                        |
 | `/admin`      | Admin Portal (default)         | Admin layout template `%s \| Admin`                     |
 | `/admin/login`| Login \| Admin (template)      | (no description)                                        |
+| `/admin/changepassword` | Change Password \| Admin (template) | (no description)                                |
 | `/admin/adminreg` | Admin Reg \| Admin (template) | (no description)                                      |
 
 ## What's Already Good

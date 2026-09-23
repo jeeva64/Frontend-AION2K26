@@ -27,6 +27,7 @@ Backend: FastAPI + SQLAlchemy 2.0 (async PostgreSQL) — see
 - [Authentication](#authentication)
 - [Event Configuration](#event-configuration)
 - [Client-Side Rules](#client-side-rules)
+- [Registration Payments](#registration-payments)
 - [Environment Variables](#environment-variables)
 - [Public Assets](#public-assets)
 - [Related Repositories](#related-repositories)
@@ -138,7 +139,8 @@ components/
   public/               reveal.tsx (IntersectionObserver scroll-reveal)
   dashboard/            stats-banner, team-registration-form,
                         registered-members-table, food-badge, dashboard-nav,
-                        payment-dialog (proof upload)
+                        payment-status-card (Pay CTA + status),
+                        payment-dialog (amount + QR → proof upload)
   admin/                AdminLayout.tsx (client auth guard + tabs),
                         AdminTabs.tsx (role-filtered tab switcher),
                         DashboardPanel.tsx (stats cards),
@@ -155,7 +157,8 @@ lib/
   types.ts              shared TypeScript types (incl. payments)
   alerts.ts             aionAlert (SweetAlert2 wrapper)
   export.ts             Excel export helpers (xlsx)
-  utils.ts              cn(), formatRupees()
+  utils.ts              cn(), formatRupees(), getOutstandingPaises,
+                        buildUpiUriWithAmount
 services/
   auth.ts               leader register/login
   team.ts               register team, candidates, leader stats
@@ -190,8 +193,8 @@ Extra fields live **at the envelope top level**, not inside a `data` object:
 | `POST /admin/adminlogin`             | `role`, `token`                            |
 | `POST /regleader`                    | `userid`                                   |
 | `POST /loginleader`                  | `userid`, `name`, `token`                  |
-| `POST /registerteam`                 | `created`, `updated`                       |
-| `GET /stats/{leader_id}`             | `stats`                                    |
+| `POST /registerteam`                 | `created`, `updated`, `uniqueStudents`, `amountDuePaises`, `currency`, `upiUri`, `paymentStatus` |
+| `GET /stats/{leader_id}`             | `stats` (nested), `registrationDeadline`   |
 | `POST /getcandidates`                | `totalStudents`, `registeredEvents`, `data`|
 | `GET /getcollege`                    | `data`                                     |
 | `POST /addcollege`                   | `count`                                    |
@@ -250,12 +253,39 @@ Source of truth: `lib/constants.ts` → `EVENT_CONFIG` (mirrored by the backend)
 
 Enforced before sending (see `lib/candidate.ts`):
 
+- **Registration deadline**: admin-set, read from `GET /stats/{leader_id}` /
+  `GET /payments/mine` (`registrationDeadline`). Past it, the team form
+  disables itself client-side (backend also returns `400`). Payment status
+  never blocks registration.
 - Max **15 students** per leader; disable when `studentsRemaining` reaches 0.
 - Max **2 events** per student.
 - **Bid Mayhem** blocks all other events (and vice-versa).
 - No same-slot clash for a student.
 - Mobile: 10 digits starting with **6–9**.
 - Degree: `ug | pg`. Department: `cs | it | ai | ds | ca`. Shift: `1 | 2`.
+
+## Registration Payments
+
+Registration fees are **flat per unique student**; money is **integer paise**
+everywhere (format with `formatRupees()`). Each leader has **one payment row**
+whose status machine is `PENDING → VERIFICATION_PENDING → SUCCESS`, with
+`REJECTED` back to resubmit. Payment never blocks team registration — the only
+gate is the registration deadline.
+
+- Registering a team does **not** auto-open the payment dialog anymore. A
+  success toast points to the visible **Pay** button on
+  `components/dashboard/payment-status-card.tsx`.
+- The card shows the **outstanding** amount via `getOutstandingPaises()`
+  (`lib/utils.ts`): PENDING/REJECTED = full expected, VERIFICATION_PENDING = 0,
+  SUCCESS = expected − submitted — with contextual Pay Now / Resubmit Payment /
+  Pay Balance wording.
+- The dialog (`components/dashboard/payment-dialog.tsx`) opens on that button
+  and **auto-triggers once** when a leader hits the 15-student cap or registers
+  all 8 events (never while a proof is under review). The UPI QR amount is
+  rebuilt from the outstanding figure via `buildUpiUriWithAmount()`.
+- After submitting a proof the state is **Verification Pending** (never
+  "Payment Successful") until a Super Admin verifies it on the
+  `/admin` → Payment Verification tab. Leaders can register first and pay later.
 
 ## Environment Variables
 

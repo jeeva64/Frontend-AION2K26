@@ -49,8 +49,8 @@ app/                      Next.js App Router
     login/                Leader login (split-panel AuthShell)
   dashboard/              Leader area (guard: leader_token + leader_id)
     layout.tsx            title "Dashboard"
-    page.tsx              Stats banner, registered teams, registration form,
-                          UPI payment status card + proof dialog
+    page.tsx              Stats banner, registered teams, registration form
+                          (deadline-gated), payment status card + Pay dialog
   admin/                  Admin area
     providers.tsx         AdminProviders: react-query QueryClient +
                           cache-level 401 redirect to /admin/login
@@ -73,10 +73,12 @@ components/
   auth/                   auth-shell.tsx (split-panel brand shell:
                             dark panel lg+ / banner mobile),
                           password-input.tsx (show/hide Eye toggle)
-  dashboard/              stats-banner.tsx, team-registration-form.tsx,
+  dashboard/              stats-banner.tsx, team-registration-form.tsx
+                          (deadline-gated - disables after admin deadline),
                           registered-members-table.tsx, food-badge.tsx,
-                          dashboard-nav.tsx, payment-dialog.tsx
-                          (multipart proof upload)
+                          dashboard-nav.tsx, payment-status-card.tsx
+                          (Pay CTA + outstanding amount), payment-dialog.tsx
+                          (amount + QR, then multipart proof upload)
   admin/                  AdminLayout.tsx (client auth guard + role-aware tabs),
                           AdminTabs.tsx (role-filtered tab switcher),
                           DashboardPanel.tsx (stats cards + login timeline),
@@ -105,7 +107,8 @@ lib/
   types.ts                shared TypeScript types (incl. payments)
   alerts.ts               aionAlert (SweetAlert2 wrapper for confirmations)
   export.ts               Excel export helpers (xlsx)
-  utils.ts                cn(), formatRupees()
+  utils.ts                cn(), formatRupees(), getOutstandingPaises(),
+                          buildUpiUriWithAmount()
 
 services/
   auth.ts, team.ts, college.ts, admin.ts, payment.ts
@@ -161,8 +164,8 @@ that are naturally lists or bundled objects.
 | `POST /admin/adminreg`               | —                                          | `adminRegister`           |
 | `POST /regleader`                    | `userid`                                   | `registerLeader`          |
 | `POST /loginleader`                  | `userid`, `name`, `token`                  | `loginLeader`             |
-| `POST /registerteam`                 | `created`, `updated`                       | `registerTeam`            |
-| `GET /stats/{leader_id}`             | `stats` (totalStudents, studentsRemaining) | `getLeaderStats`          |
+| `POST /registerteam`                 | `created`, `updated`, `uniqueStudents`, `amountDuePaises`, `currency`, `upiUri`, `paymentStatus` | `registerTeam`        |
+| `GET /stats/{leader_id}`             | `stats` (nested: totalStudents, studentsRemaining), `registrationDeadline` | `getLeaderStats`     |
 | `POST /getcandidates`                | `totalStudents`, `registeredEvents`, `data`| `getCandidates`           |
 | `GET /getcollege`                    | `data` (college list)                      | `getColleges`             |
 | `POST /addcollege`                   | `count`                                    | `addColleges`             |
@@ -202,7 +205,13 @@ and never reach into `body.data?.<topLevelKey>`.
 | `getLeaderStats`   | GET    | `/stats/{leaderId}`| leader  | `LeaderStats`                          |
 
 `registerTeam` body: `{ leaderId, event, participants: Student[] }`. Students
-are `{ name, registerNumber, mobile, degree, foodPreference? }`.
+are `{ name, registerNumber, mobile, degree, foodPreference? }`. The response
+also carries the payment snapshot (`uniqueStudents`, `amountDuePaises`,
+`upiUri`, `paymentStatus`).
+
+`getLeaderStats` normalizes the nested `stats` object plus the top-level
+`registrationDeadline`: `stats?.studentsRemaining ?? studentsRemaining`,
+`stats?.totalStudents ?? totalStudents`, `registrationDeadline ?? null`.
 
 ### `services/college.ts` — colleges
 | Function        | Method | Path                          | Auth       | Returns                       |
@@ -251,6 +260,43 @@ Money is **integer paise** everywhere; format with `formatRupees()`.
 
 \* Role enforcement is backend-side (`adminRole: 1` → moderators get 403);
 the frontend additionally hides the tab via `superAdminOnly` in `AdminTabs`.
+
+### Leader payment UX (`/dashboard`)
+
+- Registering a team does **not** open the payment dialog anymore. After a
+  successful `registerTeam` a sonner toast points to the Pay button on
+  `components/dashboard/payment-status-card.tsx`.
+- The card derives the **outstanding** amount with `getOutstandingPaises()`
+  (`lib/utils.ts`): no payment / `PENDING` / `REJECTED` → full
+  `amountDuePaises`; `VERIFICATION_PENDING` → `0`; `SUCCESS` →
+  `max(0, expectedAmountPaises − submittedAmountPaises)`. It shows contextual
+  **Pay Now / Resubmit Payment / Pay Balance** wording plus a rejection-reason
+  banner and an under-review note (with a balance-after-verification hint when
+  members were added post-submission).
+- `app/dashboard/page.tsx` holds one dialog with a `payMode`
+  (`initial` | `supplementary`, chosen from the current payment status) and
+  passes `outstandingPaises` as the dialog's `amountPaises`. Opening the dialog
+  is manual (Pay button) or **auto-triggered once** (ref-guarded) when the
+  leader hits the 15-student cap or registers all 8 events — never while a
+  proof is `VERIFICATION_PENDING`. The ref resets when the outstanding hits `0`
+  or the status enters review.
+- `components/dashboard/payment-dialog.tsx`: pay step renders the amount,
+  breakdown and a QR of the UPI URI rebuilt with the outstanding `am` via
+  `buildUpiUriWithAmount()`; proof step submits `{ utr, amountPaises, screenshot }`
+  as multipart. Supplementary mode labels it "Additional Amount to Pay".
+- **Known caveat:** the admin PaymentsPanel "Difference" column compares the
+  *last* submitted proof vs. expected — not cumulative. A backend follow-up
+  exposing `paidSoFarPaises` would make supplementary payments easier to audit
+  (out of scope for the frontend).
+
+### Registration deadline gating
+
+The leader register form (`team-registration-form.tsx`) takes an optional
+`registrationDeadline` prop (from `getLeaderStats` / `getMyPayment`). `isClosed`
+is computed on mount and re-checked every 60s; past the deadline the form shows
+a red "Registration Closed" banner, disables the event `<select>` and submit
+button, and refuses to submit defensively. Payment status is deliberately **not**
+a gate.
 
 ## Authentication & Route Guards
 
