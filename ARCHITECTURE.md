@@ -43,8 +43,8 @@ app/                      Next.js App Router
   (public)/               Shared public layout (Navbar + Footer + SkipLink)
     page.tsx              Landing (hero, schedule-at-a-glance strip,
                           8 event cards with scroll-reveal)
-    about/                Department/faculty/committee (Orbitron/Rajdhani)
-    brochure/             Invitation + rules/schedule downloads
+    about/                Department/faculty/committee + dev credit card
+    brochure/             Invitation + rules/schedule (Coming soon)
     register/             Leader signup (split-panel AuthShell)
     login/                Leader login (split-panel AuthShell)
   dashboard/              Leader area (guard: leader_token + leader_id)
@@ -366,7 +366,7 @@ the single source of truth for the frontend.
 - Tailwind v4 with tokens in `app/globals.css` (`@theme inline` +
   `:root`/`.dark`).
 - Fonts: Outfit (`--font-sans`, via `next/font/google`) throughout;
-  Orbitron/Rajdhani only in the `/about` dev section.
+  Orbitron/Rajdhani only for admin UI (root layout CSS variables).
 - Palette: primary blue `#3B82F6`/`#2563EB`, purple accent `#8B5CF6`,
   dark hero `#0F172A`.
 - Animations: `float`, `particle-float`, `pulse-ring`, `glow`, `fadeInUp`,

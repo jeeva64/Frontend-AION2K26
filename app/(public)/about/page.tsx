@@ -47,7 +47,7 @@ function WhyCard() {
   const points = [
     {
       icon: "bg-blue-500",
-      text: "Industry-oriented curriculum designed for real-world applications",
+      text: "Industry oriented curriculum designed for real world applications",
     },
     { icon: "bg-purple-500", text: "Research focused learning environment" },
     {
@@ -153,7 +153,7 @@ function VisionMission() {
       title: "Highlights",
       body: null,
       list: [
-        "Industry-oriented curriculum",
+        "Industry oriented curriculum",
         "Professional skill development",
         "Active student association",
       ],
@@ -469,8 +469,8 @@ export default function AboutPage() {
                 <span className={GRADIENT_TEXT}>Future of AI</span>
               </h1>
               <p className="max-w-xl text-lg text-slate-300">
-                Empowering minds through innovation, ethics, and industry
-                driven Artificial Intelligence education.
+                Empowering minds through innovation, ethics, and industry driven
+                Artificial Intelligence education.
               </p>
             </div>
             <WhyCard />

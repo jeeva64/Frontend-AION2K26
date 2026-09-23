@@ -1,8 +1,8 @@
 # AION 2K26 2.0 : Frontend
 
-Frontend for **AION 2K26 2.0**, the State Level Technical Symposium of the
+Frontend for **AION 2K26 2.0**, the **State Level Technical Symposium** of the
 Department of Artificial Intelligence, St. Joseph's College (Autonomous),
-Tiruchirappalli.
+Tiruchirappalli. Event date: **October 7, 2026 · Wednesday**.
 
 Built as a modern rebuild of the original static HTML site:
 
@@ -11,7 +11,8 @@ Built as a modern rebuild of the original static HTML site:
 - **@tanstack/react-query** for server state
 - **react-hook-form** + **zod** for all forms
 - **sonner** toasts, `aionAlert` (SweetAlert2) for confirmations
-- **xlsx** for Excel exports, `next/font` (Outfit)
+- **xlsx** for Excel exports, `next/font` (Outfit + Orbitron/Rajdhani for admin)
+- SEO via App Router `metadata` + `robots.ts` / `sitemap.ts` (see `SEO.md`)
 
 Backend: FastAPI + SQLAlchemy 2.0 (async PostgreSQL) — see
 `E:\AION WINTER\Backend AION2K26`.
@@ -28,6 +29,7 @@ Backend: FastAPI + SQLAlchemy 2.0 (async PostgreSQL) — see
 - [Event Configuration](#event-configuration)
 - [Client-Side Rules](#client-side-rules)
 - [Registration Payments](#registration-payments)
+- [Public UI Notes](#public-ui-notes)
 - [Environment Variables](#environment-variables)
 - [Public Assets](#public-assets)
 - [Related Repositories](#related-repositories)
@@ -97,9 +99,9 @@ Run `npm run build` before finishing any change to catch type/lint errors.
 
 | Route                | Access                 | Description                                  |
 | -------------------- | ---------------------- | -------------------------------------------- |
-| `/`                  | Public                 | Landing page (hero, schedule, event cards)   |
-| `/about`             | Public                 | Department, faculty, organizing committee    |
-| `/brochure`          | Public                 | Invitation preview, rules/schedule download  |
+| `/`                  | Public                 | Landing (hero, schedule strip, event cards)  |
+| `/about`             | Public                 | Department, faculty, committee, dev credit   |
+| `/brochure`          | Public                 | Invitation + rules/schedule (all Coming soon) |
 | `/register`          | Public                 | Leader signup (`POST /regleader`)            |
 | `/login`             | Public                 | Leader login (`POST /loginleader`)           |
 | `/dashboard`         | Leader                 | Stats, registered teams, registration, payments |
@@ -107,6 +109,8 @@ Run `npm run build` before finishing any change to catch type/lint errors.
 | `/admin/changepassword` | Admin               | Change own password (`POST /admin/changepassword`) |
 | `/admin`             | Admin                  | Stats, payment verification, views, colleges |
 | `/admin/adminreg`    | Super Admin only       | Create moderators (`POST /admin/adminreg`)   |
+
+Also: `robots.txt` + `sitemap.xml` from `app/robots.ts` / `app/sitemap.ts`.
 
 Route guards: no `leader_token`/`leader_id` → redirect `/login`; no
 `admin_token` → redirect `/admin/login`.
@@ -287,19 +291,53 @@ gate is the registration deadline.
   "Payment Successful") until a Super Admin verifies it on the
   `/admin` → Payment Verification tab. Leaders can register first and pay later.
 
+## Public UI Notes
+
+Branding and recent public-page changes (do not regress):
+
+- **Branding:** “AION 2K26 2.0” everywhere visible (navbar, footer, auth shell,
+  layout metadata, admin/Excel labels). Level: **State Level Technical Symposium**.
+- **Hero (`/`):** October 7, 2026 · Wednesday; venue chip wraps on small
+  screens; **Sail Hall, Arrupe Library** links to Google Maps
+  (`https://maps.app.goo.gl/tfLssgZkGV4i1Wtz7`). No admin-deadline pill
+  (deadline is backend-driven only). Logo is `public/logo-v2.png`
+  (1665×945 — set `width`/`height` and `height: auto` in style when constrained).
+- **CollegeHeader:** logos visible on mobile (flex-wrap); text full-width on
+  small screens, side-by-side at `sm+`.
+- **Footer (`components/layout/footer.tsx`):** 4-column layout (Brand / Explore /
+  Event / Credits) + blue→purple hairline; college name is an external link to
+  **https://www.sjctni.edu/** (new tab).
+- **`/brochure`:** Two-column layout — **Invitation** card (title +
+  **Coming soon** badge; no image/download yet) + **Downloads** (Rules +
+  Event Schedule, both **Coming soon** static cards). Root OG/Twitter still
+  uses `/aion2k26-invitation.jpg`.
+- **`/about`:** Dev credit section is a centered brand glass card
+  (`max-w-md`, Developer/System Admin badges) inside `<main>` — no full-row
+  neon Orbitron block. Committee grid is 2-col centered with per-member `tel:`
+  links; hero gradient uses brand blue→purple; faculty badge always visible on
+  touch (`sm+` hover reveal).
+- **AuthShell:** clears fixed navbar (`pt`); tall register form does not clip.
+- Old invitation/PDF assets left in `public/` for later re-enable; do not
+  assume they are linked from UI.
+
 ## Environment Variables
 
 | Variable             | Required | Default                | Description                  |
 | -------------------- | -------- | ---------------------- | ---------------------------- |
 | `NEXT_PUBLIC_API_BASE` | No     | `http://localhost:5000`| Backend base URL             |
+| `NEXT_PUBLIC_SITE_URL` | No     | `http://localhost:3000`| Canonical/OG base URL (set production host) |
 
 ## Public Assets
 
-Normalized to kebab-case in `public/`: `logo.png`, `favicon.png`,
-`clg-logo.png`, `asso-logo.png`, `mani-sir.jpg`, `mohan-sir.jpg`, `hod.jpg`,
-`jesu-sir.jpg`, `mam.jpg`, `aion2k26-invitation.jpg`,
-`aion2k26-invitation-old.jpg`, `aion-2k26-overall-rules.pdf`,
-`aion-2k26-schedule.pdf`.
+Normalized to kebab-case in `public/`: `logo-v2.png` (hero/auth current),
+`logo.png` (legacy), `favicon.png`, `clg-logo.png`, `asso-logo.png`,
+`mani-sir.jpg`, `mohan-sir.jpg`, `hod.jpg`, `jesu-sir.jpg`, `mam.jpg`,
+`aion2k26-invitation.jpg` (OG + future brochure), `aion2k26-invitation-old.jpg`,
+`aion-2k26-overall-rules.pdf`, `aion-2k26-schedule.pdf` (PDFs/old invitation
+not currently linked from the brochure page).
+
+When CSS sets image width, also set `height: "auto"` on `next/image` style
+(or vice versa) to avoid distortion.
 
 ## Related Repositories
 
@@ -309,4 +347,5 @@ Normalized to kebab-case in `public/`: `logo.png`, `favicon.png`,
 removed; this Next.js rebuild is the source of truth.)
 
 See also [`ARCHITECTURE.md`](./ARCHITECTURE.md) for the frontend API contract
-and internals, and [`SEO.md`](./SEO.md) for search-engine optimization notes.
+and internals, [`SEO.md`](./SEO.md) for search-engine optimization notes, and
+[`AGENTS.md`](./AGENTS.md) for agent conventions (build after every task).

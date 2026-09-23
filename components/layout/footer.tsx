@@ -39,7 +39,14 @@ export function Footer() {
               <br />
               Department of Artificial Intelligence
               <br />
-              St. Joseph&apos;s College (Autonomous), Tiruchirappalli
+              <a
+                href="https://www.sjctni.edu/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-slate-300 transition hover:text-blue-400"
+              >
+                St. Joseph&apos;s College (Autonomous), Tiruchirappalli
+              </a>
             </p>
           </div>
 

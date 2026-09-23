@@ -268,7 +268,15 @@ function Hero() {
             </svg>
             <span>October 7, 2026</span>
             <span className="opacity-50">|</span>
-            <span>Wednesday @ Sail Hall, Arrupe Library</span>
+            <span>Wednesday @ </span>
+            <a
+              href="https://maps.app.goo.gl/tfLssgZkGV4i1Wtz7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline decoration-blue-400/40 underline-offset-2 transition-colors hover:text-blue-300 hover:decoration-blue-300"
+            >
+              Sail Hall, Arrupe Library
+            </a>
           </div>
 
           <div className="grid animate-fade-in-up grid-cols-3 gap-2 [animation-delay:0.55s] sm:gap-3">

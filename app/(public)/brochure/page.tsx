@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 
@@ -76,32 +75,28 @@ export default function BrochurePage() {
             AION 2K26 2.0 Resources
           </h1>
           <p className="mx-auto max-w-2xl text-white/80">
-            View the official invitation and download symposium rules and event
-            schedule
+            Official invitation and symposium downloads
           </p>
         </div>
 
         <div className="grid items-start gap-10 md:grid-cols-2">
           <div className={cn(GLASS_CARD, "text-center")}>
-            <h3 className="mb-4 text-2xl font-bold text-white">🎫 Invitation</h3>
+            <h3 className="mb-6 text-2xl font-bold text-white">🎫 Invitation</h3>
 
-            <div className="mb-6 overflow-hidden rounded-xl border border-white/10">
-              <Image
-                src="/aion2k26-invitation.jpg"
-                alt="AION 2K26 2.0 Invitation"
-                width={600}
-                height={900}
-                className="h-auto w-full object-cover transition-transform duration-300 hover:scale-105"
-              />
-            </div>
-
-            <a
-              href="/aion2k26-invitation.jpg"
-              download
-              className="inline-block rounded-full bg-purple-600 px-6 py-2 font-semibold text-white shadow-md transition hover:bg-purple-700"
+            <div
+              aria-disabled="true"
+              className="flex cursor-not-allowed items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 p-4 text-left opacity-70"
             >
-              ⬇ Download Invitation
-            </a>
+              <div>
+                <p className="text-lg font-semibold text-white">
+                  Official Invitation
+                </p>
+                <p className="text-sm text-slate-400">Preview &amp; download</p>
+              </div>
+              <span className="rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-xs font-semibold whitespace-nowrap text-amber-300">
+                Coming soon
+              </span>
+            </div>
           </div>
 
           <div className={GLASS_CARD}>
