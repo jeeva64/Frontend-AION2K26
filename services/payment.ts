@@ -25,6 +25,7 @@ export async function getMyPayment(token: string): Promise<MyPaymentResponse> {
     uniqueStudents: raw.uniqueStudents ?? 0,
     amountDuePaises: raw.amountDuePaises ?? 0,
     upiUri: raw.upiUri ?? null,
+    registrationDeadline: raw.registrationDeadline ?? null,
     data: raw.data ?? null,
   };
 }

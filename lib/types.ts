@@ -72,6 +72,7 @@ export interface RegisteredStudent extends Student {
   slot1: EventSlot;
   event2?: EventName | null;
   slot2?: EventSlot | null;
+  status?: RegistrationStatus;
   createdAt?: string;
 }
 
@@ -88,9 +89,18 @@ export interface CandidatesResponse {
   message?: string;
 }
 
+export interface LeaderStatsNested {
+  totalStudents?: number;
+  studentsRemaining?: number;
+  eventsRegistered?: number;
+  registeredEvents?: EventName[];
+}
+
 export interface LeaderStats {
   studentsRemaining: number;
   totalStudents?: number;
+  registrationDeadline?: string | null;
+  stats?: LeaderStatsNested;
   success?: boolean;
   message?: string;
 }
@@ -187,6 +197,7 @@ export interface MyPaymentResponse {
   uniqueStudents: number;
   amountDuePaises: number;
   upiUri: string | null;
+  registrationDeadline?: string | null;
   data: PaymentInfo | null;
 }
 
@@ -215,4 +226,10 @@ export interface PaymentDetail extends PaymentSummaryRow {
   proofOriginalFilename?: string | null;
   proofMimeType?: string | null;
   proofFileSize?: number | null;
+}
+
+export interface EventSettings {
+  success: boolean;
+  message?: string;
+  registrationDeadline: string | null;
 }

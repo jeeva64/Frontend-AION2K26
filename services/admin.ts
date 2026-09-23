@@ -4,6 +4,7 @@ import type {
   AdminLoginInput,
   AdminRegisterInput,
   DashboardStats,
+  EventSettings,
   RegisteredStudent,
   ViewTeamFilter,
 } from "@/lib/types";
@@ -155,5 +156,37 @@ export async function getDashboardStats(
     eventCounts: {},
     collegeStats: [],
     deptCounts: {},
+  };
+}
+
+export async function getRegistrationDeadline(
+  token: string
+): Promise<EventSettings> {
+  const body = await api<unknown>("/admin/registration-deadline", {
+    method: "GET",
+    token,
+  });
+  const raw = body as unknown as EventSettings;
+  return {
+    success: raw.success,
+    message: raw.message,
+    registrationDeadline: raw.registrationDeadline ?? null,
+  };
+}
+
+export async function setRegistrationDeadline(
+  token: string,
+  deadline: string | null
+): Promise<EventSettings> {
+  const body = await api<unknown>("/admin/registration-deadline", {
+    method: "PUT",
+    token,
+    body: { registrationDeadline: deadline ?? "none" },
+  });
+  const raw = body as unknown as EventSettings;
+  return {
+    success: raw.success,
+    message: raw.message,
+    registrationDeadline: raw.registrationDeadline ?? null,
   };
 }

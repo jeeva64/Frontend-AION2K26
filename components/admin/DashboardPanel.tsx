@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useDashboardStats } from '@/hooks/useDashboardStats';
 import { aionAlert } from '@/lib/alerts';
 import { exportCollegeStats } from '@/lib/export';
@@ -11,9 +12,85 @@ import { DegreeStats } from './DegreeStats';
 import { DeptStats } from './DeptStats';
 import { DashboardSkeleton, ErrorState, EmptyState } from './DashboardSkeleton';
 import { EVENT_SLOT_MAP } from '@/lib/constants/admin';
+import { getRegistrationDeadline, setRegistrationDeadline } from '@/services/admin';
+
+function formatDeadlineDisplay(iso: string): string {
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-IN', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+function toLocalDatetimeString(iso: string): string {
+  const d = new Date(iso);
+  const offset = d.getTimezoneOffset();
+  const local = new Date(d.getTime() - offset * 60000);
+  return local.toISOString().slice(0, 16);
+}
 
 export function DashboardPanel() {
   const { data: stats, isLoading, error, refetch } = useDashboardStats();
+  const [deadline, setDeadline] = useState<string | null>(null);
+  const [deadlineInput, setDeadlineInput] = useState('');
+  const [deadlineLoading, setDeadlineLoading] = useState(true);
+  const [deadlineSaving, setDeadlineSaving] = useState(false);
+
+  useEffect(() => {
+    const token = getAdminToken();
+    if (!token) return;
+    setDeadlineLoading(true);
+    getRegistrationDeadline(token)
+      .then((res) => {
+        setDeadline(res.registrationDeadline ?? null);
+        if (res.registrationDeadline) {
+          setDeadlineInput(toLocalDatetimeString(res.registrationDeadline));
+        }
+      })
+      .catch(() => {})
+      .finally(() => setDeadlineLoading(false));
+  }, []);
+
+  const handleSaveDeadline = async () => {
+    const token = getAdminToken();
+    if (!token) return;
+    setDeadlineSaving(true);
+    try {
+      const iso = deadlineInput ? new Date(deadlineInput).toISOString() : null;
+      const res = await setRegistrationDeadline(token, iso);
+      setDeadline(res.registrationDeadline ?? null);
+      if (res.registrationDeadline) {
+        setDeadlineInput(toLocalDatetimeString(res.registrationDeadline));
+      } else {
+        setDeadlineInput('');
+      }
+      aionAlert.success('Saved', 'Registration deadline updated');
+    } catch (err) {
+      aionAlert.error('Error', err instanceof Error ? err.message : 'Failed to save deadline');
+    } finally {
+      setDeadlineSaving(false);
+    }
+  };
+
+  const handleClearDeadline = async () => {
+    const token = getAdminToken();
+    if (!token) return;
+    setDeadlineSaving(true);
+    try {
+      await setRegistrationDeadline(token, null);
+      setDeadline(null);
+      setDeadlineInput('');
+      aionAlert.success('Cleared', 'Registration deadline removed');
+    } catch (err) {
+      aionAlert.error('Error', err instanceof Error ? err.message : 'Failed to clear deadline');
+    } finally {
+      setDeadlineSaving(false);
+    }
+  };
 
   if (isLoading) return <DashboardSkeleton />;
   if (error) return <ErrorState message={error.message} onRetry={() => refetch()} />;
@@ -102,6 +179,58 @@ export function DashboardPanel() {
             <EventStatCard key={event} event={event as keyof typeof EVENT_SLOT_MAP} count={count} />
           ))}
         </div>
+      </div>
+
+      {/* Registration Deadline */}
+      <div className="bg-aion-card rounded-xl border border-aion p-6">
+        <h3 className="font-orbitron text-lg font-semibold text-aion-primary mb-4">⏰ Registration Deadline</h3>
+        {deadlineLoading ? (
+          <p className="text-aion-muted text-sm">Loading deadline...</p>
+        ) : (
+          <div className="space-y-4">
+            {deadline && (
+              <div className="rounded-lg border-l-4 border-blue-400 bg-blue-50 p-3 text-sm text-blue-800">
+                Current deadline: <strong>{formatDeadlineDisplay(deadline)}</strong>
+              </div>
+            )}
+            {!deadline && (
+              <div className="rounded-lg border-l-4 border-yellow-400 bg-yellow-50 p-3 text-sm text-yellow-800">
+                No deadline set — registration is open indefinitely.
+              </div>
+            )}
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+              <div className="flex-1">
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Set Deadline (IST)
+                </label>
+                <input
+                  type="datetime-local"
+                  value={deadlineInput}
+                  onChange={(e) => setDeadlineInput(e.target.value)}
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-aion-primary focus:outline-none focus:ring-1 focus:ring-aion-primary"
+                />
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => void handleSaveDeadline()}
+                  disabled={deadlineSaving || !deadlineInput}
+                  className="rounded-lg bg-aion-primary px-4 py-2 text-sm font-medium text-white hover:bg-aion-primary-hover transition disabled:opacity-50"
+                >
+                  {deadlineSaving ? 'Saving...' : 'Save Deadline'}
+                </button>
+                {deadline && (
+                  <button
+                    onClick={() => void handleClearDeadline()}
+                    disabled={deadlineSaving}
+                    className="rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50 transition disabled:opacity-50"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* College Stats Table + Export */}

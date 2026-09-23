@@ -17,7 +17,7 @@ import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui
 import { Input } from "@/components/ui/input";
 import { ApiError, NetworkError } from "@/lib/api-client";
 import { MAX_PROOF_MB, UTR_PATTERN } from "@/lib/constants";
-import { formatRupees } from "@/lib/utils";
+import { buildUpiUriWithAmount, formatRupees } from "@/lib/utils";
 import { submitPaymentProof } from "@/services/payment";
 
 interface PaymentDialogProps {
@@ -25,9 +25,11 @@ interface PaymentDialogProps {
   onOpenChange: (open: boolean) => void;
   token: string;
   leaderId: string;
-  amountDuePaises: number | null | undefined;
+  amountPaises: number | null | undefined;
   upiUri: string | null;
+  memberCount?: number;
   onSubmitted: () => void;
+  isSupplementary?: boolean;
 }
 
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -37,9 +39,11 @@ export function PaymentDialog({
   onOpenChange,
   token,
   leaderId,
-  amountDuePaises,
+  amountPaises,
   upiUri,
+  memberCount,
   onSubmitted,
+  isSupplementary = false,
 }: PaymentDialogProps) {
   const [step, setStep] = useState<"pay" | "proof" | "done">("pay");
   const [utr, setUtr] = useState("");
@@ -49,7 +53,8 @@ export function PaymentDialog({
   const [submitting, setSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const amount = amountDuePaises ?? 0;
+  const amount = amountPaises ?? 0;
+  const payUri = buildUpiUriWithAmount(upiUri, amount);
 
   const resetAndClose = () => {
     setStep("pay");
@@ -84,6 +89,10 @@ export function PaymentDialog({
   };
 
   const handleSubmitProof = async () => {
+    if (amount <= 0) {
+      toast.error("Nothing to pay — no amount is due.");
+      return;
+    }
     if (!validateProof()) return;
     setSubmitting(true);
     try {
@@ -117,7 +126,11 @@ export function PaymentDialog({
     >
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Complete Your Registration Payment</DialogTitle>
+          <DialogTitle>
+            {isSupplementary
+              ? "Submit Supplementary Payment Proof"
+              : "Complete Your Registration Payment"}
+          </DialogTitle>
           <DialogDescription>
             Registration ID: <span className="font-mono font-semibold">{leaderId}</span>
           </DialogDescription>
@@ -126,11 +139,26 @@ export function PaymentDialog({
         {step === "pay" && (
           <div className="space-y-4">
             <div className="rounded-xl border-2 border-blue-200 bg-blue-50 p-4 text-center">
-              <p className="text-sm text-slate-600">Amount to Pay</p>
+              <p className="text-sm text-slate-600">
+                {isSupplementary ? "Additional Amount to Pay" : "Amount to Pay"}
+              </p>
               <p className="text-3xl font-bold text-blue-700">{formatRupees(amount)}</p>
-              {upiUri && (
+              {isSupplementary ? (
+                <p className="mt-1 text-xs text-slate-500">
+                  Balance for members registered after your verified payment.
+                </p>
+              ) : (
+                memberCount !== undefined &&
+                memberCount > 0 && (
+                  <p className="mt-1 text-xs text-slate-500">
+                    Covers your {memberCount} registered member
+                    {memberCount === 1 ? "" : "s"}.
+                  </p>
+                )
+              )}
+              {payUri && (
                 <div className="mt-3 flex justify-center rounded-xl bg-white p-3">
-                  <QRCodeSVG value={upiUri} size={168} />
+                  <QRCodeSVG value={payUri} size={168} />
                 </div>
               )}
             </div>
@@ -230,7 +258,11 @@ export function PaymentDialog({
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-3xl">
               ⏳
             </div>
-            <h3 className="text-xl font-bold">Payment Submitted for Verification</h3>
+            <h3 className="text-xl font-bold">
+              {isSupplementary
+                ? "Supplementary Proof Submitted"
+                : "Payment Submitted for Verification"}
+            </h3>
             <div className="space-y-1 rounded-xl bg-slate-100 p-4 text-sm">
               <p>
                 Registration ID:{" "}
@@ -242,7 +274,9 @@ export function PaymentDialog({
               </p>
             </div>
             <p className="text-xs text-slate-500">
-              Do not pay again. Track the status from your dashboard.
+              {isSupplementary
+                ? "Your supplementary proof has been submitted. Track the status from your dashboard."
+                : "Do not pay again. Track the status from your dashboard."}
             </p>
             <DialogFooter>
               <Button type="button" onClick={resetAndClose} className="w-full">

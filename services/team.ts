@@ -57,7 +57,9 @@ export async function getLeaderStats(
   });
   const raw = body as unknown as LeaderStats;
   return {
-    studentsRemaining: raw.studentsRemaining ?? 0,
-    totalStudents: raw.totalStudents,
+    studentsRemaining:
+      raw.stats?.studentsRemaining ?? raw.studentsRemaining ?? 0,
+    totalStudents: raw.stats?.totalStudents ?? raw.totalStudents,
+    registrationDeadline: raw.registrationDeadline ?? null,
   };
 }

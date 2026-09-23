@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -11,7 +11,6 @@ import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui
 import { Input } from "@/components/ui/input";
 import { selectClass } from "@/components/ui/select-classes";
 import { FoodBadge } from "@/components/dashboard/food-badge";
-import { PaymentDialog } from "@/components/dashboard/payment-dialog";
 import {
   DEGREES,
   EVENT_CONFIG,
@@ -54,8 +53,14 @@ interface TeamRegistrationFormProps {
   studentMap: Record<string, RegisteredStudent>;
   registeredEvents: EventName[];
   totalStudents: number;
+  registrationDeadline?: string | null;
   onRegistered: () => void;
   onUnauthorized: () => void;
+}
+
+function deadlinePassed(deadline: string | undefined | null): boolean {
+  if (!deadline) return false;
+  return Date.now() > new Date(deadline).getTime();
 }
 
 function emptyMembers(count: number): TeamFormValues["members"] {
@@ -86,6 +91,7 @@ export function TeamRegistrationForm({
   studentMap,
   registeredEvents,
   totalStudents,
+  registrationDeadline,
   onRegistered,
   onUnauthorized,
 }: TeamRegistrationFormProps) {
@@ -96,11 +102,19 @@ export function TeamRegistrationForm({
   const [existingByIndex, setExistingByIndex] = useState<
     Record<number, RegisteredStudent | null>
   >({});
-  const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
-  const [lastPaymentInfo, setLastPaymentInfo] = useState<{
-    amountDuePaises: number;
-    upiUri: string | null;
-  }>({ amountDuePaises: 0, upiUri: null });
+
+  const [isClosed, setIsClosed] = useState(() =>
+    deadlinePassed(registrationDeadline)
+  );
+
+  useEffect(() => {
+    setIsClosed(deadlinePassed(registrationDeadline));
+    if (!registrationDeadline) return;
+    const interval = setInterval(() => {
+      setIsClosed(deadlinePassed(registrationDeadline));
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [registrationDeadline]);
 
   const {
     control,
@@ -142,6 +156,10 @@ export function TeamRegistrationForm({
   };
 
   const onSubmit = async (values: TeamFormValues) => {
+    if (isClosed) {
+      toast.error("Registrations are closed — the deadline has passed.");
+      return;
+    }
     if (!selectedEvent) {
       toast.error("Please select an event!");
       return;
@@ -209,23 +227,18 @@ export function TeamRegistrationForm({
     }
 
     try {
-      const result = await registerTeam(
+      await registerTeam(
         { leaderId, event: selectedEvent, participants: cleanMembers },
         token
       );
-      toast.success(`Team registered for ${selectedEvent}`);
+      toast.success(
+        `Team registered for ${selectedEvent}. Click "Pay Now" on the dashboard to complete your payment.`
+      );
       setSelectedEvent("");
       setConflictWarnings({});
       setExistingByIndex({});
       reset({ members: [] });
       onRegistered();
-      if (result.paymentStatus === "PENDING") {
-        setLastPaymentInfo({
-          amountDuePaises: result.amountDuePaises ?? 0,
-          upiUri: result.upiUri ?? null,
-        });
-        setPaymentDialogOpen(true);
-      }
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
         onUnauthorized();
@@ -245,6 +258,16 @@ export function TeamRegistrationForm({
     <div className="rounded-2xl border-2 border-[#e0e7ff] bg-[linear-gradient(135deg,rgba(102,126,234,0.05)_0%,rgba(118,75,162,0.05)_100%)] p-6 shadow-lg backdrop-blur">
       <h2 className="mb-6 text-center text-3xl font-bold">Register New Team</h2>
 
+      {isClosed && (
+        <div
+          role="alert"
+          className="mb-6 rounded-lg border-l-4 border-red-400 bg-red-50 p-4 text-sm text-red-800"
+        >
+          <strong>Registration Closed</strong> — the registration deadline has
+          passed. Contact an organizer to register your team.
+        </div>
+      )}
+
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Field>
           <FieldLabel htmlFor="eventSelect">Select Event</FieldLabel>
@@ -252,6 +275,7 @@ export function TeamRegistrationForm({
             id="eventSelect"
             value={selectedEvent}
             onChange={(e) => handleEventChange(e.target.value)}
+            disabled={isClosed}
             className={selectClass}
           >
             <option value="">-- Choose Event --</option>
@@ -456,8 +480,16 @@ export function TeamRegistrationForm({
               })}
             </div>
 
-            <Button type="submit" disabled={isSubmitting} className="mt-6 w-full py-3 text-base">
-              {isSubmitting ? "Registering..." : "Register Team"}
+            <Button
+              type="submit"
+              disabled={isSubmitting || isClosed}
+              className="mt-6 w-full py-3 text-base"
+            >
+              {isClosed
+                ? "Registration Closed"
+                : isSubmitting
+                  ? "Registering..."
+                  : "Register Team"}
             </Button>
           </div>
         )}
@@ -468,16 +500,6 @@ export function TeamRegistrationForm({
           </FieldDescription>
         )}
       </form>
-
-      <PaymentDialog
-        open={paymentDialogOpen}
-        onOpenChange={setPaymentDialogOpen}
-        token={token}
-        leaderId={leaderId}
-        amountDuePaises={lastPaymentInfo.amountDuePaises}
-        upiUri={lastPaymentInfo.upiUri}
-        onSubmitted={onRegistered}
-      />
     </div>
   );
 }

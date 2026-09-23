@@ -2,20 +2,18 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import type { PaymentInfo } from "@/lib/types";
 import { formatRupees } from "@/lib/utils";
 
 interface PaymentStatusCardProps {
-  payment: {
-    paymentStatus?: string | null;
-    expectedAmountPaises?: number | null;
-    submittedAmountPaises?: number | null;
-    utr?: string | null;
-    rejectionReason?: string | null;
-  } | null;
+  payment: PaymentInfo | null;
   amountDuePaises: number;
+  outstandingPaises: number;
   uniqueStudents: number;
   loading: boolean;
   onRefresh: () => void;
+  onPay: () => void;
+  hasPendingRegistrations?: boolean;
 }
 
 const STATUS_STYLES: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline"; className: string }> = {
@@ -44,12 +42,27 @@ const STATUS_STYLES: Record<string, { label: string; variant: "default" | "secon
 export function PaymentStatusCard({
   payment,
   amountDuePaises,
+  outstandingPaises,
   uniqueStudents,
   loading,
   onRefresh,
+  onPay,
+  hasPendingRegistrations,
 }: PaymentStatusCardProps) {
   const status = payment?.paymentStatus ?? "PENDING";
   const style = STATUS_STYLES[status] ?? STATUS_STYLES.PENDING;
+  const hasRegistrations = uniqueStudents > 0;
+  const showPay =
+    hasRegistrations &&
+    outstandingPaises > 0 &&
+    status !== "VERIFICATION_PENDING";
+
+  const payLabel =
+    status === "REJECTED"
+      ? `Resubmit Payment · ${formatRupees(outstandingPaises)}`
+      : status === "SUCCESS"
+        ? `Pay Balance · ${formatRupees(outstandingPaises)}`
+        : `Pay Now · ${formatRupees(outstandingPaises)}`;
 
   return (
     <div className="rounded-2xl border border-white/50 bg-white/90 p-6 shadow-lg backdrop-blur">
@@ -66,10 +79,11 @@ export function PaymentStatusCard({
           <p className="mt-1 text-2xl font-bold">{uniqueStudents}</p>
         </div>
         <div className="rounded-xl border border-slate-200 p-4">
-          <p className="text-xs uppercase tracking-wide text-slate-500">
-            {status === "SUCCESS" ? "Paid Amount" : "Amount Due"}
+          <p className="text-xs uppercase tracking-wide text-slate-500">Amount Due Now</p>
+          <p className="mt-1 text-2xl font-bold text-blue-700">{formatRupees(outstandingPaises)}</p>
+          <p className="mt-1 text-xs text-slate-500">
+            of {formatRupees(amountDuePaises)} total{hasRegistrations ? ` · ${uniqueStudents} members` : ""}
           </p>
-          <p className="mt-1 text-2xl font-bold text-blue-700">{formatRupees(amountDuePaises)}</p>
         </div>
         <div className="flex flex-col justify-center rounded-xl border border-slate-200 p-4">
           <p className="text-xs uppercase tracking-wide text-slate-500">Status</p>
@@ -89,16 +103,51 @@ export function PaymentStatusCard({
           proof with the correct details.
         </div>
       )}
-      {status === "VERIFICATION_PENDING" && (
-        <p className="mt-4 text-sm text-slate-600">
-          UTR <span className="font-mono font-semibold">{payment?.utr}</span> is under
-          review. Registration is confirmed only after an organizer verifies it.
-        </p>
+
+      {showPay && (
+        <Button
+          type="button"
+          onClick={onPay}
+          className="mt-4 w-full bg-gradient-to-r from-blue-600 to-purple-600 py-3 text-base text-white"
+        >
+          {payLabel}
+        </Button>
       )}
+
+      {status === "VERIFICATION_PENDING" && (
+        <div className="mt-4 rounded-lg border-l-4 border-blue-400 bg-blue-50 p-3 text-sm text-blue-800">
+          <p>
+            Your proof (UTR <span className="font-mono font-semibold">{payment?.utr}</span>)
+            is under review — <strong>no payment is needed now</strong>.
+          </p>
+          {hasPendingRegistrations && (
+            <p className="mt-1 text-xs text-blue-700">
+              You added members after submitting — your remaining balance will be
+              shown once the organizer verifies the current proof.
+            </p>
+          )}
+        </div>
+      )}
+
       {status === "PENDING" && (
         <p className="mt-4 text-sm text-slate-600">
-          Register a team and complete the UPI payment to confirm your registration.
+          {hasRegistrations
+            ? "Your teams are saved. Click Pay Now whenever you are ready to complete the payment."
+            : "Add your team registration above first, then complete the payment."}
         </p>
+      )}
+
+      {status === "SUCCESS" && outstandingPaises <= 0 && (
+        <div className="mt-4 space-y-3">
+          <p className="text-sm text-green-700">
+            Payment verified — your registrations are confirmed.
+          </p>
+          {hasPendingRegistrations && (
+            <p className="text-sm text-amber-700">
+              You have registrations awaiting verification by the organizer.
+            </p>
+          )}
+        </div>
       )}
     </div>
   );

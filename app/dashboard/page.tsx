@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -9,10 +9,12 @@ import { StatsBanner } from "@/components/dashboard/stats-banner";
 import { RegisteredMembersTable } from "@/components/dashboard/registered-members-table";
 import { TeamRegistrationForm } from "@/components/dashboard/team-registration-form";
 import { PaymentStatusCard } from "@/components/dashboard/payment-status-card";
+import { PaymentDialog } from "@/components/dashboard/payment-dialog";
 import { ApiError } from "@/lib/api-client";
 import { getLeaderId, getLeaderToken, redirectToLogin } from "@/lib/auth";
 import {
   EVENT_CONFIG,
+  EVENT_NAMES,
   MAX_STUDENTS_PER_LEADER,
   SLOT_1_EVENTS,
   SLOT_2_EVENTS,
@@ -20,6 +22,7 @@ import {
 } from "@/lib/constants";
 import type { RegisteredStudent } from "@/lib/types";
 import type { MyPaymentResponse } from "@/lib/types";
+import { getOutstandingPaises } from "@/lib/utils";
 import { getCandidates, getLeaderStats } from "@/services/team";
 import { getMyPayment } from "@/services/payment";
 
@@ -41,6 +44,14 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [paymentInfo, setPaymentInfo] = useState<MyPaymentResponse | null>(null);
   const [paymentLoading, setPaymentLoading] = useState(true);
+  const [statsDeadline, setStatsDeadline] = useState<string | null>(null);
+  const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
+  const [payMode, setPayMode] = useState<"initial" | "supplementary">("initial");
+  const autoTriggeredRef = useRef(false);
+
+  const hasPendingRegistrations = useMemo(() => {
+    return candidates.some((c) => c.status === "PAYMENT_PENDING");
+  }, [candidates]);
 
   useEffect(() => {
     const t = getLeaderToken();
@@ -69,6 +80,7 @@ export default function DashboardPage() {
       setStudentsRemaining(
         stats.studentsRemaining ?? MAX_STUDENTS_PER_LEADER - total
       );
+      setStatsDeadline(stats.registrationDeadline ?? null);
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
         redirectToLogin(router);
@@ -112,6 +124,52 @@ export default function DashboardPage() {
     void loadData();
     void loadPayment();
   }, [loadData, loadPayment]);
+
+  const registrationDeadline = paymentInfo?.registrationDeadline ?? statsDeadline;
+
+  const paymentData = paymentInfo?.data ?? null;
+  const outstandingPaises = getOutstandingPaises(
+    paymentData,
+    paymentInfo?.amountDuePaises ?? 0
+  );
+
+  const openPayDialog = useCallback(() => {
+    if (outstandingPaises <= 0) return;
+    setPayMode(
+      paymentData?.paymentStatus === "SUCCESS" ? "supplementary" : "initial"
+    );
+    autoTriggeredRef.current = true;
+    setPaymentDialogOpen(true);
+  }, [outstandingPaises, paymentData]);
+
+  useEffect(() => {
+    if (!paymentData) return;
+    const status = paymentData.paymentStatus;
+    if (status === "VERIFICATION_PENDING" || outstandingPaises <= 0) {
+      autoTriggeredRef.current = false;
+      return;
+    }
+    const capReached =
+      studentsRemaining !== null &&
+      studentsRemaining <= 0 &&
+      totalStudents > 0;
+    const allEventsRegistered = registeredEvents.length === EVENT_NAMES.length;
+    if (
+      (capReached || allEventsRegistered) &&
+      !autoTriggeredRef.current &&
+      !paymentDialogOpen
+    ) {
+      openPayDialog();
+    }
+  }, [
+    paymentData,
+    outstandingPaises,
+    studentsRemaining,
+    totalStudents,
+    registeredEvents,
+    paymentDialogOpen,
+    openPayDialog,
+  ]);
 
   const studentMap = useMemo(() => {
     const map: Record<string, RegisteredStudent> = {};
@@ -214,14 +272,18 @@ export default function DashboardPage() {
           <StatsBanner
             totalStudents={totalStudents}
             studentsRemaining={studentsRemaining ?? MAX_STUDENTS_PER_LEADER - totalStudents}
+            registrationDeadline={registrationDeadline}
           />
 
           <PaymentStatusCard
             payment={paymentInfo?.data ?? null}
             amountDuePaises={paymentInfo?.amountDuePaises ?? 0}
+            outstandingPaises={outstandingPaises}
             uniqueStudents={paymentInfo?.uniqueStudents ?? 0}
             loading={paymentLoading}
             onRefresh={() => void loadPayment()}
+            hasPendingRegistrations={hasPendingRegistrations}
+            onPay={openPayDialog}
           />
 
           <TeamRegistrationForm
@@ -230,6 +292,7 @@ export default function DashboardPage() {
             studentMap={studentMap}
             registeredEvents={registeredEvents}
             totalStudents={totalStudents}
+            registrationDeadline={registrationDeadline}
             onRegistered={() => refreshAll()}
             onUnauthorized={handleUnauthorized}
           />
@@ -240,6 +303,18 @@ export default function DashboardPage() {
           />
         </div>
       </main>
+
+      <PaymentDialog
+        open={paymentDialogOpen}
+        onOpenChange={setPaymentDialogOpen}
+        token={token ?? ""}
+        leaderId={leaderId ?? ""}
+        amountPaises={outstandingPaises}
+        upiUri={paymentInfo?.upiUri ?? null}
+        memberCount={paymentInfo?.uniqueStudents ?? 0}
+        onSubmitted={refreshAll}
+        isSupplementary={payMode === "supplementary"}
+      />
     </>
   );
 }
