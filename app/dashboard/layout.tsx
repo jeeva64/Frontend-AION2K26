@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AnalyticsScripts } from "@/components/analytics";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -10,5 +11,10 @@ export default function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <>{children}</>;
+  return (
+    <>
+      <AnalyticsScripts />
+      {children}
+    </>
+  );
 }
