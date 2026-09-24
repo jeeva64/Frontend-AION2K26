@@ -38,7 +38,7 @@ what is in place, per-route metadata, and remaining optional polish.
 | ------------- | ------------------------------ | ----------------------------------------------------- |
 | `/`           | Home \| AION 2K26 2.0          | State Level + Oct 7 + events; canonical `/`           |
 | `/about`      | About \| AION 2K26 2.0         | About AI Dept + team; canonical `/about`              |
-| `/brochure`   | Brochure \| AION 2K26 2.0      | Invitation + rules live; schedule Coming soon; canonical `/brochure` |
+| `/brochure`   | Brochure \| AION 2K26 2.0      | Invitation + rules + schedule downloads; canonical `/brochure` |
 | `/register`   | (root template)                | Disallowed in robots.ts; no page-level metadata       |
 | `/login`      | (root template)                | Disallowed in robots.ts; no page-level metadata       |
 | `/dashboard`  | Dashboard \| AION 2K26 2.0     | `noindex`                                             |

@@ -100,8 +100,8 @@ Run `npm run build` before finishing any change to catch type/lint errors.
 | Route                | Access                 | Description                                  |
 | -------------------- | ---------------------- | -------------------------------------------- |
 | `/`                  | Public                 | Landing (hero, schedule strip, event cards)  |
-| `/about`             | Public                 | Department, faculty, committee, dev credit   |
-| `/brochure`          | Public                 | Invitation + rules download (schedule Coming soon) |
+| `/about`             | Public                 | Department, faculty, committee, secretaries, dev credit |
+| `/brochure`          | Public                 | Invitation + rules + schedule downloads |
 | `/register`          | Public                 | Leader signup (`POST /regleader`)            |
 | `/login`             | Public                 | Leader login (`POST /loginleader`)           |
 | `/dashboard`         | Leader                 | Stats, registered teams, registration, payments |
@@ -306,11 +306,13 @@ Branding and recent public-page changes (do not regress):
   small screens, side-by-side at `sm+`.
 - **Footer (`components/layout/footer.tsx`):** 4-column layout (Brand / Explore /
   Event / Credits) + blue→purple hairline; college name is an external link to
-  **https://www.sjctni.edu/** (new tab).
+  **https://www.sjctni.edu/** (new tab). Credits developer name
+  **Jeeva Loganathan (II M.Sc AI)** is a hover-highlight external link to
+  **https://www.linkedin.com/in/jeeva-l/** (new tab; same URL as About DevSection).
 - **`/brochure`:** Two-column layout — **Invitation** card (preview image +
   View PDF / Download PDF for `aion-2k26-2.0-invite.pdf`) + **Downloads**
-  (Rules live via `aion-2k26-overall-rules.pdf`; Event Schedule **Coming soon**
-  static card). Root
+  (Rules via `aion-2k26-overall-rules.pdf`; Event Schedule via
+  `aion-2k26-schedule.pdf` — both View/Download). Root
   OG/Twitter uses `/aion-2k26-invite.jpg`.
 - **`/about`:** Dev credit section is a centered brand glass card
   (`max-w-md`, Developer/System Admin badges) inside `<main>` — no full-row
@@ -319,8 +321,6 @@ Branding and recent public-page changes (do not regress):
   md:grid-cols-3`, no phone). Hero gradient uses brand blue→purple; faculty
   badge always visible on touch (`sm+` hover reveal).
 - **AuthShell:** clears fixed navbar (`pt`); tall register form does not clip.
-- Rules PDF is live on `/brochure`; schedule PDF left in `public/` until the
-  event schedule is finalized (card still **Coming soon**).
 
 ## Environment Variables
 
@@ -336,7 +336,7 @@ Normalized to kebab-case in `public/`: `logo-v2.png` (hero/auth current),
 `mani-sir.jpg`, `mohan-sir.jpg`, `hod.jpg`, `jesu-sir.jpg`, `mam.jpg`,
 `aion-2k26-invite.jpg` (OG + brochure preview), `aion-2k26-2.0-invite.pdf`
 (invitation download), `aion-2k26-overall-rules.pdf`, `aion-2k26-schedule.pdf`
-(rules PDF linked from brochure; schedule PDF not yet linked).
+(rules and schedule PDFs linked from brochure).
 
 When CSS sets image width, also set `height: "auto"` on `next/image` style
 (or vice versa) to avoid distortion.

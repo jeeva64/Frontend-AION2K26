@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 const INVITE_PDF = "/aion-2k26-2.0-invite.pdf";
 const INVITE_PREVIEW = "/aion-2k26-invite.jpg";
 const RULES_PDF = "/aion-2k26-overall-rules.pdf";
+const SCHEDULE_PDF = "/aion-2k26-schedule.pdf";
 
 export const metadata: Metadata = {
   title: "Brochure",
@@ -164,19 +165,32 @@ export default function BrochurePage() {
                 </div>
               </div>
 
-              <div
-                aria-disabled="true"
-                className="flex cursor-not-allowed items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 p-4 opacity-70"
-              >
-                <div>
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <div className="mb-3">
                   <p className="text-lg font-semibold text-white">
                     Event Schedule
                   </p>
                   <p className="text-sm text-slate-400">Full day-wise program</p>
                 </div>
-                <span className="rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-xs font-semibold whitespace-nowrap text-amber-300">
-                  Coming soon
-                </span>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <a
+                    href={SCHEDULE_PDF}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/20"
+                  >
+                    <Eye aria-hidden="true" className="h-4 w-4" />
+                    View PDF
+                  </a>
+                  <a
+                    href={SCHEDULE_PDF}
+                    download
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-blue-400/40 bg-blue-500/20 px-4 py-2.5 text-sm font-semibold text-blue-200 transition-colors hover:bg-blue-500/30"
+                  >
+                    <Download aria-hidden="true" className="h-4 w-4" />
+                    Download PDF
+                  </a>
+                </div>
               </div>
             </div>
           </div>
