@@ -101,7 +101,7 @@ Run `npm run build` before finishing any change to catch type/lint errors.
 | -------------------- | ---------------------- | -------------------------------------------- |
 | `/`                  | Public                 | Landing (hero, schedule strip, event cards)  |
 | `/about`             | Public                 | Department, faculty, committee, dev credit   |
-| `/brochure`          | Public                 | Invitation + rules/schedule (all Coming soon) |
+| `/brochure`          | Public                 | Invitation + rules download (schedule Coming soon) |
 | `/register`          | Public                 | Leader signup (`POST /regleader`)            |
 | `/login`             | Public                 | Leader login (`POST /loginleader`)           |
 | `/dashboard`         | Leader                 | Stats, registered teams, registration, payments |
@@ -309,16 +309,18 @@ Branding and recent public-page changes (do not regress):
   **https://www.sjctni.edu/** (new tab).
 - **`/brochure`:** Two-column layout — **Invitation** card (preview image +
   View PDF / Download PDF for `aion-2k26-2.0-invite.pdf`) + **Downloads**
-  (Rules + Event Schedule, both **Coming soon** static cards). Root
+  (Rules live via `aion-2k26-overall-rules.pdf`; Event Schedule **Coming soon**
+  static card). Root
   OG/Twitter uses `/aion-2k26-invite.jpg`.
 - **`/about`:** Dev credit section is a centered brand glass card
   (`max-w-md`, Developer/System Admin badges) inside `<main>` — no full-row
   neon Orbitron block. Committee grid is 2-col centered with per-member `tel:`
-  links; hero gradient uses brand blue→purple; faculty badge always visible on
-  touch (`sm+` hover reveal).
+  links; Secretaries render in a separate section (`sm:grid-cols-2
+  md:grid-cols-3`, no phone). Hero gradient uses brand blue→purple; faculty
+  badge always visible on touch (`sm+` hover reveal).
 - **AuthShell:** clears fixed navbar (`pt`); tall register form does not clip.
-- Old rules/schedule PDFs left in `public/` for later re-enable; do not
-  assume they are linked from UI.
+- Rules PDF is live on `/brochure`; schedule PDF left in `public/` until the
+  event schedule is finalized (card still **Coming soon**).
 
 ## Environment Variables
 
@@ -334,7 +336,7 @@ Normalized to kebab-case in `public/`: `logo-v2.png` (hero/auth current),
 `mani-sir.jpg`, `mohan-sir.jpg`, `hod.jpg`, `jesu-sir.jpg`, `mam.jpg`,
 `aion-2k26-invite.jpg` (OG + brochure preview), `aion-2k26-2.0-invite.pdf`
 (invitation download), `aion-2k26-overall-rules.pdf`, `aion-2k26-schedule.pdf`
-(rules/schedule PDFs not currently linked from the brochure page).
+(rules PDF linked from brochure; schedule PDF not yet linked).
 
 When CSS sets image width, also set `height: "auto"` on `next/image` style
 (or vice versa) to avoid distortion.

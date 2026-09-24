@@ -44,7 +44,7 @@ app/                      Next.js App Router
     page.tsx              Landing (hero, schedule-at-a-glance strip,
                           8 event cards with scroll-reveal)
     about/                Department/faculty/committee + dev credit card
-    brochure/             Invitation + rules/schedule (Coming soon)
+    brochure/             Invitation + rules download (schedule Coming soon)
     register/             Leader signup (split-panel AuthShell)
     login/                Leader login (split-panel AuthShell)
   dashboard/              Leader area (guard: leader_token + leader_id)

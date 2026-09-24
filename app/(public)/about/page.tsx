@@ -88,8 +88,8 @@ function WhoWeAre() {
   const stats = [
     { value: "2024", color: "text-blue-400", label: "Established" },
     { value: "2+", color: "text-purple-400", label: "Degree Programs" },
-    { value: "10+", color: "text-green-400", label: "Events Conducted" },
-    { value: "100+", color: "text-yellow-400", label: "Active Students" },
+    { value: "25+", color: "text-green-400", label: "Events Conducted" },
+    { value: "200+", color: "text-yellow-400", label: "Active Students" },
   ];
   return (
     <section className="mx-auto max-w-7xl px-6 py-20">
@@ -193,7 +193,7 @@ function VisionMission() {
 
 const FACULTY = [
   {
-    image: "/hod.jpg",
+    image: "/hod-sir.png",
     alt: "Mr. A Charles",
     overlay: "bg-blue-500",
     badge: "Head of Department",
@@ -201,6 +201,16 @@ const FACULTY = [
     role: "Head of the Department",
     roleColor: "text-blue-400",
     creds: "M.Sc., PGDCA, M.Phil.,",
+  },
+  {
+    image: "/asha-mam.jpeg",
+    alt: "Dr. J. Hirudhaya Mary Asha",
+    overlay: "bg-purple-500",
+    badge: "Assistant Professor",
+    name: "Dr. J. Hirudhaya Mary Asha",
+    role: "Assistant Professor",
+    roleColor: "text-purple-400",
+    creds: "M.Sc., M.Phil., MCA, M.Tech., Ph.D.,",
   },
   {
     image: "/mohan-sir.jpg",
@@ -213,17 +223,17 @@ const FACULTY = [
     creds: "M.Sc., M.Sc(M)., M.Tech., MBA., M.Phil.,",
   },
   {
-    image: "/mam.jpg",
-    alt: "Dr. J. Hirudhaya Mary Asha",
+    image: "/josephine-mam.png",
+    alt: "Dr. S. Josephine Theresa",
     overlay: "bg-purple-500",
     badge: "Assistant Professor",
-    name: "Dr. J. Hirudhaya Mary Asha",
+    name: "Dr. S. Josephine Theresa",
     role: "Assistant Professor",
     roleColor: "text-purple-400",
-    creds: "M.Sc., M.Phil., MCA, M.Tech., Ph.D.,",
+    creds: "MCA., M.Phil., SET.,",
   },
   {
-    image: "/jesu-sir.jpg",
+    image: "/jeseudoss-sir.jpg",
     alt: "Mr. M. Jesu Doss",
     overlay: "bg-purple-500",
     badge: "Assistant Professor",
@@ -231,6 +241,56 @@ const FACULTY = [
     role: "Assistant Professor",
     roleColor: "text-purple-400",
     creds: "MCA., M.Phil., SET.,",
+  },
+  {
+    image: "/thilaga-mam.jpg",
+    alt: "Dr. T. Thilagavathi",
+    overlay: "bg-purple-500",
+    badge: "Assistant Professor",
+    name: "Dr. T. Thilagavathi",
+    role: "Assistant Professor",
+    roleColor: "text-purple-400",
+    creds: "MCA., M.Phil., Ph.D.,",
+  },
+  {
+    image: "/diana-mam.jpeg",
+    alt: "Ms. P. Diana Jennifer",
+    overlay: "bg-purple-500",
+    badge: "Assistant Professor",
+    name: "Ms. P. Diana Jennifer",
+    role: "Assistant Professor",
+    roleColor: "text-purple-400",
+    creds: "M.Sc., B.Ed., NET., TNSET.,",
+  },
+  {
+    image: "/infine-mam.jpg",
+    alt: "Ms. V. Infine Sinduja",
+    overlay: "bg-purple-500",
+    badge: "Assistant Professor",
+    name: "Ms. V. Infine Sinduja",
+    role: "Assistant Professor",
+    roleColor: "text-purple-400",
+    creds: "MCA., M.Phil., NET.,",
+  },
+  {
+    image: "/lakshmanan-sir.jpeg",
+    alt: "Dr. S. Lakshmanan",
+    overlay: "bg-purple-500",
+    badge: "Assistant Professor",
+    name: "Dr. S. Lakshmanan",
+    role: "Assistant Professor",
+    roleColor: "text-purple-400",
+    creds: "COPA., MCA., M.Phil., Ph.D.,",
+  },
+  {
+    image: "/keerthi-mam.jpg",
+    alt: "Ms. G. Keerthana Darathi",
+    overlay: "bg-purple-500",
+    badge: "Assistant Professor",
+    name: "Ms. G. Keerthana Darathi",
+    role: "Assistant Professor",
+    roleColor: "text-purple-400",
+    creds: "MCA.,",
   },
 ];
 
@@ -288,7 +348,15 @@ function FacultySection() {
   );
 }
 
-const COMMITTEE = [
+type CommitteeMember = {
+  role: string;
+  name: string;
+  degree: string;
+  phone?: string;
+  phoneHref?: string;
+};
+
+const COMMITTEE: CommitteeMember[] = [
   {
     role: "Chairman",
     name: "Nandakumaaran N I",
@@ -303,6 +371,19 @@ const COMMITTEE = [
     phone: "+91 99765 78892",
     phoneHref: "tel:+919976578892",
   },
+];
+
+const SECRETARIES: CommitteeMember[] = [
+  { role: "Secretary", name: "Adrian Nigel A", degree: "I B.Sc AI & ML" },
+  { role: "Secretary", name: "Harini M", degree: "I B.Sc AI & ML" },
+  { role: "Secretary", name: "Boomika P", degree: "II B.Sc AI & ML" },
+  { role: "Secretary", name: "Naveen K", degree: "II B.Sc AI & ML" },
+  { role: "Secretary", name: "Srinidhi S", degree: "III B.Sc AI & ML" },
+  { role: "Secretary", name: "John Ceena J V", degree: "III B.Sc AI & ML" },
+  { role: "Secretary", name: "Jagan Xavier J", degree: "I M.Sc AI" },
+  { role: "Secretary", name: "Shaliha K", degree: "I M.Sc AI" },
+  { role: "Secretary", name: "Shri Harish V M", degree: "II M.Sc AI" },
+  { role: "Secretary", name: "Thrisha V", degree: "II M.Sc AI" },
 ];
 
 function CommitteeSection() {
@@ -327,7 +408,50 @@ function CommitteeSection() {
               {member.role}
             </h4>
             <p className="mb-1 text-lg font-semibold">{member.name}</p>
-            <p className="mb-2 text-sm text-slate-400">{member.degree}</p>
+            {member.degree && (
+              <p className="mb-2 text-sm text-slate-400">{member.degree}</p>
+            )}
+            {member.phone && (
+              <a
+                href={member.phoneHref}
+                className="text-sm text-slate-300 hover:text-blue-400"
+              >
+                📞 {member.phone}
+              </a>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function SecretarySection() {
+  return (
+    <section className="mx-auto max-w-7xl px-6 pb-20">
+      <div className="mb-12 text-center">
+        <h2 className="mb-4 text-5xl font-bold">
+          Organizing <span className="text-purple-500">Secretaries</span>
+        </h2>
+        <p className="mx-auto max-w-2xl text-lg text-slate-400">
+          Student secretaries coordinating the vision and execution of AION 2K26
+          2.0
+        </p>
+      </div>
+
+      <div className="mx-auto grid max-w-5xl gap-8 sm:grid-cols-2 md:grid-cols-3">
+        {SECRETARIES.map((member) => (
+          <div
+            key={member.name}
+            className={cn(GLASS_CARD, "w-full p-6 text-center")}
+          >
+            <h4 className="mb-2 text-xl font-bold text-blue-400">
+              {member.role}
+            </h4>
+            <p className="mb-1 text-lg font-semibold">{member.name}</p>
+            {member.degree && (
+              <p className="mb-2 text-sm text-slate-400">{member.degree}</p>
+            )}
             {member.phone && (
               <a
                 href={member.phoneHref}
@@ -482,6 +606,7 @@ export default function AboutPage() {
       <VisionMission />
       <FacultySection />
       <CommitteeSection />
+      <SecretarySection />
       <DevSection />
     </main>
   );

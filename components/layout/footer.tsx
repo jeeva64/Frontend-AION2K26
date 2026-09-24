@@ -80,9 +80,14 @@ export function Footer() {
             <p className="text-sm text-slate-300">
               Developed By
               <br />
-              <span className="font-medium text-slate-200">
+              <a
+                href="https://www.linkedin.com/in/jeeva-l/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-slate-200 transition hover:text-blue-400"
+              >
                 Jeeva Loganathan (II M.Sc AI)
-              </span>
+              </a>
               <br />
               <a
                 href="tel:+919976578892"
