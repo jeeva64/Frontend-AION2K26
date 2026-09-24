@@ -102,6 +102,7 @@ Run `npm run build` before finishing any change to catch type/lint errors.
 | `/`                  | Public                 | Landing (hero, schedule strip, event cards)  |
 | `/about`             | Public                 | Department, faculty, committee, secretaries, dev credit |
 | `/brochure`          | Public                 | Invitation + rules + schedule downloads |
+| `/contact`           | Public                 | Map embed + staff incharge/chairman/sysadmin phones |
 | `/register`          | Public                 | Leader signup (`POST /regleader`)            |
 | `/login`             | Public                 | Leader login (`POST /loginleader`)           |
 | `/dashboard`         | Leader                 | Stats, registered teams, registration, payments |
@@ -123,7 +124,7 @@ app/
   globals.css           Tailwind v4 @theme, AION palette, animations
   not-found.tsx         Branded 404 page
   (public)/             Public pages: page (landing), about, brochure,
-                        register, login, layout
+                        contact, register, login, layout
   dashboard/            Leader dashboard (layout + page)
   admin/                Admin portal
     providers.tsx       AdminProviders (react-query + cache-level 401 redirect)
@@ -321,6 +322,9 @@ Branding and recent public-page changes (do not regress):
   md:grid-cols-3`, no phone). Hero gradient uses brand blue→purple; faculty
   badge always visible on touch (`sm+` hover reveal).
 - **AuthShell:** clears fixed navbar (`pt`); tall register form does not clip.
+- **`/contact`:** two-col (stacks mobile) — left Google Maps campus embed +
+  Open map link; right three cards (Staff Incharge / Chairman / System Admin)
+  with clickable `tel:` phones. Navbar + footer Explore lists include Contact.
 
 ## Environment Variables
 

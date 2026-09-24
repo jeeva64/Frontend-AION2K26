@@ -12,6 +12,7 @@ const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/brochure", label: "Brochure" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export function DashboardNav() {

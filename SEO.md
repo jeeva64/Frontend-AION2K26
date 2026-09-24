@@ -24,8 +24,8 @@ what is in place, per-route metadata, and remaining optional polish.
 - Fonts loaded via `next/font/google` — self-hosted at build time.
 - `app/robots.ts` — allows public routes; disallows `/admin`, `/dashboard`,
   `/login`, `/register`; references sitemap.
-- `app/sitemap.ts` — public routes only: `/`, `/about`, `/brochure`.
-- Canonicals: `/` and `/brochure` (+ `/about`).
+- `app/sitemap.ts` — public routes only: `/`, `/about`, `/brochure`, `/contact`.
+- Canonicals: `/` and `/brochure` (+ `/about`, `/contact`).
 - JSON-LD `Event` on the landing page (AION 2K26 2.0, 2026-10-07, ₹200).
 - `robots: { index: false }` on dashboard + admin layouts; robots.ts also
   blocks `/login` and `/register` (client pages cannot export `metadata`).
@@ -39,6 +39,7 @@ what is in place, per-route metadata, and remaining optional polish.
 | `/`           | Home \| AION 2K26 2.0          | State Level + Oct 7 + events; canonical `/`           |
 | `/about`      | About \| AION 2K26 2.0         | About AI Dept + team; canonical `/about`              |
 | `/brochure`   | Brochure \| AION 2K26 2.0      | Invitation + rules + schedule downloads; canonical `/brochure` |
+| `/contact`    | Contact \| AION 2K26 2.0        | Map + staff incharge/chairman/sysadmin; canonical `/contact`  |
 | `/register`   | (root template)                | Disallowed in robots.ts; no page-level metadata       |
 | `/login`      | (root template)                | Disallowed in robots.ts; no page-level metadata       |
 | `/dashboard`  | Dashboard \| AION 2K26 2.0     | `noindex`                                             |
