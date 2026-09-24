@@ -307,17 +307,17 @@ Branding and recent public-page changes (do not regress):
 - **Footer (`components/layout/footer.tsx`):** 4-column layout (Brand / Explore /
   Event / Credits) + blue→purple hairline; college name is an external link to
   **https://www.sjctni.edu/** (new tab).
-- **`/brochure`:** Two-column layout — **Invitation** card (title +
-  **Coming soon** badge; no image/download yet) + **Downloads** (Rules +
-  Event Schedule, both **Coming soon** static cards). Root OG/Twitter still
-  uses `/aion2k26-invitation.jpg`.
+- **`/brochure`:** Two-column layout — **Invitation** card (preview image +
+  View PDF / Download PDF for `aion-2k26-2.0-invite.pdf`) + **Downloads**
+  (Rules + Event Schedule, both **Coming soon** static cards). Root
+  OG/Twitter uses `/aion-2k26-invite.jpg`.
 - **`/about`:** Dev credit section is a centered brand glass card
   (`max-w-md`, Developer/System Admin badges) inside `<main>` — no full-row
   neon Orbitron block. Committee grid is 2-col centered with per-member `tel:`
   links; hero gradient uses brand blue→purple; faculty badge always visible on
   touch (`sm+` hover reveal).
 - **AuthShell:** clears fixed navbar (`pt`); tall register form does not clip.
-- Old invitation/PDF assets left in `public/` for later re-enable; do not
+- Old rules/schedule PDFs left in `public/` for later re-enable; do not
   assume they are linked from UI.
 
 ## Environment Variables
@@ -332,9 +332,9 @@ Branding and recent public-page changes (do not regress):
 Normalized to kebab-case in `public/`: `logo-v2.png` (hero/auth current),
 `logo.png` (legacy), `favicon.png`, `clg-logo.png`, `asso-logo.png`,
 `mani-sir.jpg`, `mohan-sir.jpg`, `hod.jpg`, `jesu-sir.jpg`, `mam.jpg`,
-`aion2k26-invitation.jpg` (OG + future brochure), `aion2k26-invitation-old.jpg`,
-`aion-2k26-overall-rules.pdf`, `aion-2k26-schedule.pdf` (PDFs/old invitation
-not currently linked from the brochure page).
+`aion-2k26-invite.jpg` (OG + brochure preview), `aion-2k26-2.0-invite.pdf`
+(invitation download), `aion-2k26-overall-rules.pdf`, `aion-2k26-schedule.pdf`
+(rules/schedule PDFs not currently linked from the brochure page).
 
 When CSS sets image width, also set `height: "auto"` on `next/image` style
 (or vice versa) to avoid distortion.

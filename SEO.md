@@ -17,7 +17,7 @@ what is in place, per-route metadata, and remaining optional polish.
   - `title.default`: `AION 2K26 2.0 | State Level Technical Symposium`
   - `title.template`: `%s | AION 2K26 2.0`
   - `description`: State Level blurb with date + all 8 events
-  - `openGraph` + `twitter` cards (image: `/aion2k26-invitation.jpg`)
+  - `openGraph` + `twitter` cards (image: `/aion-2k26-invite.jpg`)
   - `icons.icon`: `/favicon.png`
 - `viewport`: `width=device-width, initialScale=1`, `themeColor: #0f172a`
 - `<html lang="en">`
@@ -38,7 +38,7 @@ what is in place, per-route metadata, and remaining optional polish.
 | ------------- | ------------------------------ | ----------------------------------------------------- |
 | `/`           | Home \| AION 2K26 2.0          | State Level + Oct 7 + events; canonical `/`           |
 | `/about`      | About \| AION 2K26 2.0         | About AI Dept + team; canonical `/about`              |
-| `/brochure`   | Brochure \| AION 2K26 2.0      | Invitation + downloads (Coming soon); canonical `/brochure` |
+| `/brochure`   | Brochure \| AION 2K26 2.0      | Invitation (live) + downloads (Coming soon); canonical `/brochure` |
 | `/register`   | (root template)                | Disallowed in robots.ts; no page-level metadata       |
 | `/login`      | (root template)                | Disallowed in robots.ts; no page-level metadata       |
 | `/dashboard`  | Dashboard \| AION 2K26 2.0     | `noindex`                                             |
@@ -58,7 +58,7 @@ what is in place, per-route metadata, and remaining optional polish.
 
 ## Optional Follow-ups
 
-1. Dedicated `1200×630` `public/og-image.png` (invitation is portrait 600×900).
+1. Dedicated `1200×630` `public/og-image.png` (current invite preview is landscape 1600×1086).
 2. Server layouts under `/login` and `/register` for page-level titles +
    `noindex` metadata (currently covered by `robots.ts` disallow).
 3. FAQ / Organization JSON-LD if content warrants it.

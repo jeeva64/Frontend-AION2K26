@@ -50,9 +50,9 @@ export const metadata: Metadata = {
     url: "/",
     images: [
       {
-        url: "/aion2k26-invitation.jpg",
-        width: 600,
-        height: 900,
+        url: "/aion-2k26-invite.jpg",
+        width: 1600,
+        height: 1086,
         alt: "AION 2K26 2.0 Invitation",
       },
     ],
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     title: "AION 2K26 2.0 | State Level Technical Symposium",
     description:
       "Compete in 8 technical events at AION 2K26 2.0 - October 7, 2026.",
-    images: ["/aion2k26-invitation.jpg"],
+    images: ["/aion-2k26-invite.jpg"],
   },
   icons: {
     icon: "/favicon.png",
