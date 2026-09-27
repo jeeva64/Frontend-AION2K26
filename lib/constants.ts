@@ -49,18 +49,18 @@ export interface EventConfig {
 }
 
 export const EVENT_CONFIG: Record<EventName, EventConfig> = {
-  Fixathon: { slot: "1", participants: 2, time: "11:00 AM - 1:00 PM" },
+  Fixathon: { slot: "1", participants: 2, time: "10:30 AM - 12:30 PM" },
   "Bid Mayhem": {
     slot: "BOTH",
     participants: 2,
-    time: "11:00 AM - 4:00 PM (Prelims & Mains)",
+    time: "10:30 AM - 3:30 PM (Prelims & Mains)",
   },
-  "Mute Masters": { slot: "1", participants: 2, time: "11:00 AM - 1:00 PM" },
-  "Treasure Titans": { slot: "1", participants: 2, time: "11:00 AM - 1:00 PM" },
-  QRush: { slot: "2", participants: 2, time: "2:00 PM - 4:00 PM" },
-  VisionX: { slot: "2", participants: 1, time: "2:00 PM - 4:00 PM" },
-  ThinkSync: { slot: "2", participants: 2, time: "2:00 PM - 4:00 PM" },
-  "Crazy Sell": { slot: "2", participants: 4, time: "2:00 PM - 4:00 PM" },
+  "Mute Masters": { slot: "1", participants: 2, time: "10:30 AM - 12:30 PM" },
+  "Treasure Titans": { slot: "1", participants: 2, time: "10:30 AM - 12:30 PM" },
+  QRush: { slot: "2", participants: 2, time: "1:30 PM - 3:30 PM" },
+  VisionX: { slot: "2", participants: 1, time: "1:30 PM - 3:30 PM" },
+  ThinkSync: { slot: "2", participants: 2, time: "1:30 PM - 3:30 PM" },
+  "Crazy Sell": { slot: "2", participants: 4, time: "1:30 PM - 3:30 PM" },
 };
 
 export const ADMIN_ROLES = ["super_admin", "moderator"] as const;
