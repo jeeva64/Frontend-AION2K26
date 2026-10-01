@@ -394,7 +394,7 @@ function ScheduleStrip() {
           </svg>
           <span>
             <strong className="font-semibold text-red-400">Bid Mayhem</strong>{" "}
-            spans both slots (11:00 AM - 4:00 PM): Prelims in Slot 1, Mains in
+            Spans Both Slots (10:30 AM - 3:30 PM): Prelims in Slot 1, Mains in
             Slot 2.
           </span>
         </div>
