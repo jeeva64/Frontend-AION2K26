@@ -28,7 +28,7 @@ export const EVENT_RULES: Record<EventName, EventRules> = {
   Fixathon: {
     eventName: "Fixathon",
     category: "technical",
-    format: "Prelims (Written) → Mains (System-based)",
+    format: "Prelims (Written) → Mains (System based)",
     prerequisites: [],
     rules: [
       "Only One team per department is allowed.",
@@ -73,13 +73,13 @@ export const EVENT_RULES: Record<EventName, EventRules> = {
     rules: [
       "Only One team per department is allowed.",
       "Team Size: 2 Members.",
-      "Prelims: MCQ round (Knowledge of IPL from 2008 – 2026 is required).",
+      "Prelims: MCQ round (Knowledge of IPL from 2008 - 2026 is required).",
       "Mains: Auction round will be conducted.",
       "Rules for the Mains round will be announced on the day of the event.",
     ],
     specialNotes: [
       "Participants of this event cannot participate in any other events.",
-      "Prelims in Slot 1 (11:00 AM - 1:00 PM), Mains in Slot 2 (2:00 PM - 4:00 PM).",
+      "Prelims in Slot 1 (10:30 AM - 12:30 PM), Mains in Slot 2 (1:30 PM - 3:30 PM).",
     ],
   },
   "Crazy Sell": {
