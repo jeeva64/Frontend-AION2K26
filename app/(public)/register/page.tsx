@@ -8,15 +8,25 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { Loader2 } from "lucide-react";
+import { Info, Loader2, MessageSquare } from "lucide-react";
 
 import { AuthShell } from "@/components/auth/auth-shell";
 import { PasswordInput } from "@/components/auth/password-input";
 import { Button } from "@/components/ui/button";
-import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { selectClass } from "@/components/ui/select-classes";
-import { DEPARTMENTS, SHIFTS, type Department, type Shift } from "@/lib/constants";
+import {
+  DEPARTMENTS,
+  SHIFTS,
+  type Department,
+  type Shift,
+} from "@/lib/constants";
 import { ApiError, NetworkError } from "@/lib/api-client";
 import { registerLeader } from "@/services/auth";
 import { getColleges } from "@/services/college";
@@ -26,7 +36,10 @@ const registerSchema = z
     name: z.string().trim().min(1, "Name is required"),
     mobile: z
       .string()
-      .regex(/^[6-9]\d{9}$/, "Mobile must be a valid 10-digit number starting with 6-9"),
+      .regex(
+        /^[6-9]\d{9}$/,
+        "Mobile must be a valid 10-digit number starting with 6-9",
+      ),
     email: z.email("Please enter a valid email address"),
     department: z.enum(DEPARTMENTS, { message: "Please select a department" }),
     shift: z.enum(SHIFTS, { message: "Please select a shift" }),
@@ -38,7 +51,10 @@ const registerSchema = z
       .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
       .regex(/[a-z]/, "Password must contain at least one lowercase letter")
       .regex(/[0-9]/, "Password must contain at least one digit")
-      .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character")
+      .regex(
+        /[^A-Za-z0-9]/,
+        "Password must contain at least one special character",
+      )
       .regex(/^\S+$/, "Password must not contain spaces"),
     confirmPassword: z.string(),
   })
@@ -114,11 +130,15 @@ export default function RegisterPage() {
       router.push("/login");
     } catch (error) {
       if (error instanceof ApiError && error.status === 400) {
-        toast.error(error.message || "Registration failed. Please check your details.");
+        toast.error(
+          error.message || "Registration failed. Please check your details.",
+        );
       } else if (error instanceof NetworkError) {
         toast.error(error.message);
       } else {
-        toast.error(error instanceof Error ? error.message : "Registration failed");
+        toast.error(
+          error instanceof Error ? error.message : "Registration failed",
+        );
       }
     } finally {
       setIsSubmitting(false);
@@ -142,7 +162,9 @@ export default function RegisterPage() {
         <Field>
           <FieldLabel htmlFor="name">
             Name
-            <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
+            <span aria-hidden="true" className="ml-0.5 text-red-500">
+              *
+            </span>
           </FieldLabel>
           <Input
             id="name"
@@ -160,7 +182,9 @@ export default function RegisterPage() {
           <Field>
             <FieldLabel htmlFor="mobile">
               Mobile Number
-              <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
+              <span aria-hidden="true" className="ml-0.5 text-red-500">
+                *
+              </span>
             </FieldLabel>
             <Input
               id="mobile"
@@ -179,7 +203,9 @@ export default function RegisterPage() {
           <Field>
             <FieldLabel htmlFor="email">
               Email
-              <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
+              <span aria-hidden="true" className="ml-0.5 text-red-500">
+                *
+              </span>
             </FieldLabel>
             <Input
               id="email"
@@ -198,7 +224,9 @@ export default function RegisterPage() {
           <Field>
             <FieldLabel htmlFor="department">
               Department
-              <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
+              <span aria-hidden="true" className="ml-0.5 text-red-500">
+                *
+              </span>
             </FieldLabel>
             <select
               id="department"
@@ -222,7 +250,9 @@ export default function RegisterPage() {
           <Field>
             <FieldLabel htmlFor="shift">
               Shift
-              <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
+              <span aria-hidden="true" className="ml-0.5 text-red-500">
+                *
+              </span>
             </FieldLabel>
             <select
               id="shift"
@@ -234,7 +264,7 @@ export default function RegisterPage() {
               <option value="">Select Shift</option>
               {SHIFTS.map((shift) => (
                 <option key={shift} value={shift}>
-                  {shift === "1" ? "Shift 1 (Morning)" : "Shift 2 (Afternoon)"}
+                  {shift === "1" ? "Aided" : "Self Finance"}
                 </option>
               ))}
             </select>
@@ -245,7 +275,9 @@ export default function RegisterPage() {
         <Field>
           <FieldLabel htmlFor="college">
             College
-            <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
+            <span aria-hidden="true" className="ml-0.5 text-red-500">
+              *
+            </span>
           </FieldLabel>
           {collegeLoadFailed ? (
             <>
@@ -258,7 +290,7 @@ export default function RegisterPage() {
                 {...register("college")}
               />
               <FieldDescription>
-                Could not load college list — please type your college name.
+                Could not load college list - please refresh the page.
               </FieldDescription>
             </>
           ) : colleges.length > 0 ? (
@@ -289,11 +321,38 @@ export default function RegisterPage() {
           {errors.college && <FieldError>{errors.college.message}</FieldError>}
         </Field>
 
+        <div className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+          <Info
+            className="h-5 w-5 shrink-0 text-blue-600 mt-0.5"
+            aria-hidden="true"
+          />
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-blue-800">
+              Can&apos;t find your college?
+            </p>
+            <p className="mt-1 text-sm text-blue-700">
+              No worries - just reach out to our System Admin and we&apos;ll add
+              it for you.
+            </p>
+            <a
+              href="https://wa.me/919976578892"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline"
+            >
+              <MessageSquare className="h-4 w-4" aria-hidden="true" />
+              Chat on WhatsApp
+            </a>
+          </div>
+        </div>
+
         <div className="grid gap-5 sm:grid-cols-2">
           <Field>
             <FieldLabel htmlFor="password">
               Password
-              <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
+              <span aria-hidden="true" className="ml-0.5 text-red-500">
+                *
+              </span>
             </FieldLabel>
             <PasswordInput
               id="password"
@@ -304,7 +363,8 @@ export default function RegisterPage() {
               {...register("password")}
             />
             <FieldDescription>
-              8–128 chars with uppercase, lowercase, digit &amp; special character.
+              8-128 chars with uppercase, lowercase, digit &amp; special
+              character.
             </FieldDescription>
             {errors.password && (
               <FieldError>{errors.password.message}</FieldError>
@@ -314,7 +374,9 @@ export default function RegisterPage() {
           <Field>
             <FieldLabel htmlFor="confirmPassword">
               Confirm Password
-              <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
+              <span aria-hidden="true" className="ml-0.5 text-red-500">
+                *
+              </span>
             </FieldLabel>
             <PasswordInput
               id="confirmPassword"
@@ -347,7 +409,10 @@ export default function RegisterPage() {
 
         <p className="mt-2 text-center text-sm text-gray-500">
           Already have an account?{" "}
-          <Link href="/login" className="font-medium text-blue-600 hover:underline">
+          <Link
+            href="/login"
+            className="font-medium text-blue-600 hover:underline"
+          >
             Login here
           </Link>
         </p>

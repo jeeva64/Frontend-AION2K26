@@ -3,12 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Reveal } from "@/components/public/reveal";
+import { HomeEventsSection } from "@/components/public/home-events-section";
 import {
   EVENT_CONFIG,
   SLOT_1_EVENTS,
   SLOT_2_EVENTS,
   type EventName,
-  type EventSlot,
 } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -19,20 +19,6 @@ export const metadata: Metadata = {
     canonical: "/",
   },
 };
-
-function slotLabelText(slot: EventSlot): string {
-  if (slot === "BOTH") return "Both Slots";
-  return slot === "1" ? "Slot 1" : "Slot 2";
-}
-
-const SLOT_1_TIME =
-  EVENT_CONFIG[SLOT_1_EVENTS.find((e) => EVENT_CONFIG[e].slot === "1")!].time;
-const SLOT_2_TIME =
-  EVENT_CONFIG[SLOT_2_EVENTS.find((e) => EVENT_CONFIG[e].slot === "2")!].time;
-
-/* ────────────────────────────────────────────────────────────────
-   HERO
-──────────────────────────────────────────────────────────────── */
 
 const ORB_CLASSES = [
   "animate-float",
@@ -91,8 +77,8 @@ function HeroBackground() {
             i === 0
               ? "-top-[10%] -left-[10%] h-[clamp(300px,50vw,600px)] w-[clamp(300px,50vw,600px)]"
               : i === 1
-                ? "-right-[10%] -bottom-[10%] h-[clamp(250px,40vw,500px)] w-[clamp(250px,40vw,500px)]"
-                : "top-[50%] left-[50%] h-[clamp(200px,35vw,450px)] w-[clamp(200px,35vw,450px)] -translate-x-1/2 -translate-y-1/2"
+              ? "-right-[10%] -bottom-[10%] h-[clamp(250px,40vw,500px)] w-[clamp(250px,40vw,500px)]"
+              : "top-[50%] left-[50%] h-[clamp(200px,35vw,450px)] w-[clamp(200px,35vw,450px)] -translate-x-1/2 -translate-y-1/2"
           }`}
           style={{ background: bg, opacity: 0.4 }}
         />
@@ -326,104 +312,10 @@ function Hero() {
   );
 }
 
-/* ────────────────────────────────────────────────────────────────
-   EVENTS
-──────────────────────────────────────────────────────────────── */
-
-interface EventInfo {
-  name: EventName;
-  number: string;
-  description: string;
-  badgeClass: string;
-}
-
-const TECH_EVENTS: EventInfo[] = [
-  {
-    name: "QRush",
-    number: "01",
-    description:
-      "Test your knowledge in OOPs, SQL, Operating System, Computer Networks and AI",
-    badgeClass: "from-cyan-500 to-cyan-700",
-  },
-  {
-    name: "Fixathon",
-    number: "02",
-    description: "Identify and fix bugs in given programs",
-    badgeClass: "from-blue-500 to-blue-700",
-  },
-  {
-    name: "VisionX",
-    number: "03",
-    description:
-      "Showcase creativity by generating AI-based images and videos on an on the spot theme.",
-    badgeClass: "from-purple-500 to-purple-700",
-  },
-  {
-    name: "ThinkSync",
-    number: "04",
-    description: "Connect concepts through logical reasoning",
-    badgeClass: "from-indigo-500 to-indigo-700",
-  },
-];
-
-const NON_TECH_EVENTS: EventInfo[] = [
-  {
-    name: "Bid Mayhem",
-    number: "05",
-    description: "Build your dream cricket team in a mock auction",
-    badgeClass: "from-emerald-500 to-emerald-700",
-  },
-  {
-    name: "Crazy Sell",
-    number: "06",
-    description: "Showcase creativity through innovative ads",
-    badgeClass: "from-amber-500 to-amber-700",
-  },
-  {
-    name: "Mute Masters",
-    number: "07",
-    description: "A classic fun game of acting and guessing",
-    badgeClass: "from-red-500 to-red-700",
-  },
-  {
-    name: "Treasure Titans",
-    number: "08",
-    description: "Solve clues and race to find the hidden treasure",
-    badgeClass: "from-orange-500 to-orange-700",
-  },
-];
-
-function EventCard({ event }: { event: EventInfo }) {
-  const config = EVENT_CONFIG[event.name];
-  const slotLabel = `${slotLabelText(config.slot)} • ${config.time}`;
-
-  return (
-    <div className="relative flex h-full flex-col overflow-hidden rounded-[clamp(1rem,2vw,1.5rem)] border-2 border-white/[0.08] bg-white/[0.05] px-[clamp(1.5rem,3vw,2rem)] py-[clamp(1.75rem,4vw,2.5rem)] text-center shadow-[0_8px_24px_rgba(0,0,0,0.15)] backdrop-blur-[10px] transition-all duration-[400ms] ease-[cubic-bezier(0.4,0,0.2,1)] before:pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(135deg,rgba(59,130,246,0.1)_0%,transparent_60%)] before:opacity-0 before:transition-opacity before:duration-[400ms] hover:-translate-y-3 hover:border-blue-500/50 hover:shadow-[0_20px_48px_rgba(0,0,0,0.25)] hover:before:opacity-100">
-      <div
-        className={`absolute -top-3.5 left-1/2 z-10 flex h-[clamp(2.5rem,6vw,3rem)] min-w-[clamp(2.5rem,6vw,3rem)] -translate-x-1/2 items-center justify-center rounded-full bg-gradient-to-br px-2 font-bold text-white shadow-[0_4px_12px_rgba(0,0,0,0.3)] ${event.badgeClass}`}
-      >
-        {event.number}
-      </div>
-
-      <h3 className="relative z-[1] mt-[clamp(1rem,2vw,1.5rem)] mb-[clamp(0.5rem,1.5vw,0.75rem)] text-[clamp(1.125rem,2.5vw,1.5rem)] font-bold leading-snug text-white">
-        {event.name}
-      </h3>
-      <p className="relative z-[1] mb-[clamp(0.75rem,2vw,1rem)] text-[clamp(0.875rem,1.8vw,1rem)] leading-relaxed text-slate-200/80">
-        {event.description}
-      </p>
-
-      <div className="relative z-[1] mt-auto flex flex-col gap-[clamp(0.375rem,1vw,0.5rem)] border-t border-white/10 pt-[clamp(0.75rem,2vw,1rem)]">
-        <span className="text-[clamp(0.75rem,1.5vw,0.813rem)] font-semibold tracking-wide text-blue-400">
-          {slotLabel}
-        </span>
-        <span className="text-[clamp(0.75rem,1.5vw,0.813rem)] font-semibold tracking-wide text-slate-400">
-          {config.participants}{" "}
-          {config.participants === 1 ? "Member" : "Members"}
-        </span>
-      </div>
-    </div>
-  );
-}
+const SLOT_1_TIME =
+  EVENT_CONFIG[SLOT_1_EVENTS.find((e) => EVENT_CONFIG[e].slot === "1")!].time;
+const SLOT_2_TIME =
+  EVENT_CONFIG[SLOT_2_EVENTS.find((e) => EVENT_CONFIG[e].slot === "2")!].time;
 
 function ScheduleSlotCard({
   title,
@@ -511,69 +403,6 @@ function ScheduleStrip() {
   );
 }
 
-function EventsSection() {
-  return (
-    <section className="relative overflow-hidden bg-[radial-gradient(ellipse_at_bottom,#1e293b_0%,#0f172a_100%)]">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 overflow-hidden"
-      >
-        <div className="animate-float absolute -left-[10%] top-[12%] h-72 w-72 rounded-full bg-blue-600 opacity-10 blur-[80px]" />
-        <div className="animate-float-delay absolute -right-[10%] bottom-[8%] h-80 w-80 rounded-full bg-purple-600 opacity-10 blur-[80px]" />
-      </div>
-
-      <div className="relative z-[1] mx-auto max-w-[1280px] px-[clamp(1rem,3vw,1.5rem)] py-[clamp(3rem,8vw,6rem)]">
-        <Reveal>
-          <div className="mb-[clamp(2.5rem,6vw,4rem)] text-center">
-            <span className="mb-[clamp(0.75rem,2vw,1rem)] inline-block rounded-full bg-[linear-gradient(135deg,#DBEAFE_0%,#BFDBFE_100%)] px-[clamp(0.875rem,2vw,1.25rem)] py-[clamp(0.375rem,1vw,0.5rem)] text-[clamp(0.75rem,1.5vw,0.875rem)] font-semibold tracking-wider text-blue-900 uppercase shadow-[0_2px_8px_rgba(37,99,235,0.15)]">
-              Technical Events
-            </span>
-            <h2 className="text-[clamp(2rem,6vw,3.5rem)] font-extrabold leading-tight tracking-tight text-white">
-              Challenge Your Skills
-            </h2>
-            <p className="mx-auto mt-[clamp(0.75rem,2vw,1rem)] max-w-[42rem] text-[clamp(0.938rem,2vw,1.125rem)] leading-relaxed text-slate-400">
-              Push your technical boundaries with these cutting-edge
-              competitions
-            </p>
-          </div>
-        </Reveal>
-
-        <div className="mb-[clamp(4rem,10vw,8rem)] grid grid-cols-1 gap-[clamp(1.25rem,3vw,1.75rem)] sm:grid-cols-2 lg:grid-cols-4">
-          {TECH_EVENTS.map((event, i) => (
-            <Reveal key={event.name} delay={(i % 4) * 90} className="h-full">
-              <EventCard event={event} />
-            </Reveal>
-          ))}
-        </div>
-
-        <Reveal>
-          <div className="mb-[clamp(4rem,10vw,8rem)] text-center">
-            <span className="mb-[clamp(0.75rem,2vw,1rem)] inline-block rounded-full bg-[linear-gradient(135deg,#FCE7F3_0%,#FBCFE8_100%)] px-[clamp(0.875rem,2vw,1.25rem)] py-[clamp(0.375rem,1vw,0.5rem)] text-[clamp(0.75rem,1.5vw,0.875rem)] font-semibold tracking-wider text-pink-800 uppercase shadow-[0_2px_8px_rgba(236,72,153,0.15)]">
-              Non Technical Events
-            </span>
-            <h2 className="text-[clamp(2rem,6vw,3.5rem)] font-extrabold leading-tight tracking-tight text-white">
-              Fun &amp; Creativity
-            </h2>
-            <p className="mx-auto mt-[clamp(0.75rem,2vw,1rem)] max-w-[42rem] text-[clamp(0.938rem,2vw,1.125rem)] leading-relaxed text-slate-400">
-              Unleash your creativity and team spirit with these exciting events
-            </p>
-          </div>
-        </Reveal>
-
-        <div className="grid grid-cols-1 gap-[clamp(1.25rem,3vw,1.75rem)] sm:grid-cols-2 lg:grid-cols-4">
-          {NON_TECH_EVENTS.map((event, i) => (
-            <Reveal key={event.name} delay={(i % 4) * 90} className="h-full">
-              <EventCard event={event} />
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ──────────────────────────────────────────────────────────────── */
-
 export default function HomePage() {
   const eventJsonLd = {
     "@context": "https://schema.org",
@@ -616,7 +445,7 @@ export default function HomePage() {
       />
       <Hero />
       <ScheduleStrip />
-      <EventsSection />
+      <HomeEventsSection />
     </>
   );
 }
